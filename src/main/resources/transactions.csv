@@ -1,0 +1,21 @@
+date|time|description|vendor|amount
+2023-01-15|09:30:00|Salary Deposit|Acme Corp|4500.00
+2023-01-16|12:15:00|Lunch|Chipotle|-12.50
+2023-01-20|18:45:00|Groceries|Whole Foods|-85.20
+2023-02-01|10:00:00|Rent Payment|Apartment Complex|-1200.00
+2023-02-05|14:20:00|Freelance Project|Client A|800.00
+2023-02-10|19:00:00|Dinner|Italian Place|-65.00
+2023-02-15|08:30:00|Gas Station|Shell|-45.00
+2023-03-01|10:05:00|Rent Payment|Apartment Complex|-1200.00
+2023-03-03|11:45:00|Book Purchase|Amazon|-25.99
+2023-03-10|17:30:00|Side Gig|TaskRabbit|150.00
+2023-03-12|20:15:00|Movie Tickets|Cinemark|-30.00
+2023-04-01|09:00:00|Salary Deposit|Acme Corp|4500.00
+2023-04-02|13:10:00|Coffee|Starbucks|-5.50
+2023-04-05|16:40:00|Electronics|Best Buy|-299.99
+2023-04-10|12:00:00|Refund|Amazon|25.99
+2023-04-15|10:13:25|ergonomic keyboard|Amazon|-89.50
+2023-04-15|11:15:00|Invoice 1001 paid|Joe|1500.00
+2023-04-20|19:30:00|Concert Ticket|Ticketmaster|-120.00
+2023-05-01|10:00:00|Rent Payment|Apartment Complex|-1200.00
+2023-05-05|14:00:00|Consulting Fee|Client B|600.00
