@@ -1,5 +1,7 @@
 ## Current tasks
-- [ ] 
+`Transaction` + `loadTransactions()` + `printTransactions()` → `displayAll()` works.
+- [x] Transaction class implemented
+- [ ] Pull data into ArrayList<Transaction> in main app
 
 ## General Ideas  
 
