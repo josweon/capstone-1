@@ -3,27 +3,21 @@ package com.pluralsight;
 import java.time.LocalDateTime;
 
 public class Transaction {
-    private LocalDateTime date;
-    private LocalDateTime time;
+    private LocalDateTime dateTime;
     private String description;
     private String vendor;
     private double amount;
 
-    public Transaction(LocalDateTime date, LocalDateTime time, String description, String vendor, double amount) {
-        this.date = date;
-        this.time = time;
+    public Transaction(LocalDateTime dateTime, String description, String vendor, double amount) {
+        this.dateTime = dateTime;
         this.description = description;
         this.vendor = vendor;
         this.amount = amount;
     }
 
     //region Getters
-    public LocalDateTime getDate() {
-        return date;
-    }
-
-    public LocalDateTime getTime() {
-        return time;
+    public LocalDateTime getDateTime() {
+        return dateTime;
     }
 
     public String getDescription() {
@@ -50,8 +44,7 @@ public class Transaction {
     @Override
     public String toString() {
         return "Transaction{" +
-                "date=" + date +
-                ", time=" + time +
+                "dateTime=" + dateTime +
                 ", description='" + description + '\'' +
                 ", vendor='" + vendor + '\'' +
                 ", amount=" + amount +
