@@ -45,5 +45,17 @@ public class Transaction {
     public boolean isPayment(){
         return this.amount > 0;
     }
+
+    // For debugging
+    @Override
+    public String toString() {
+        return "Transaction{" +
+                "date=" + date +
+                ", time=" + time +
+                ", description='" + description + '\'' +
+                ", vendor='" + vendor + '\'' +
+                ", amount=" + amount +
+                '}';
+    }
 }
 
