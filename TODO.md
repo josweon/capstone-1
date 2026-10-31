@@ -1,7 +1,7 @@
 ## Current tasks
 ## **5.** Home menu + `promptText` / `promptAmount` + `addDeposit()` / `makePayment()` + `recordTransaction()` + `saveTransaction()`.
-- [ ] Home menu pattern (`addDeposit`, `makePayment`, `displayLedger`, `exitApplication (use daves done pattern)`)
-- [ ] promptText method
+- [x] Home menu pattern (`addDeposit`, `makePayment`, `displayLedger`, `exitApplication (use daves done pattern)`)
+- [x] promptText method
 - [ ] promptAmount method
 
 NOT MANDATORY:

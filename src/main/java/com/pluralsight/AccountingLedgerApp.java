@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Locale;
 import java.util.Scanner;
 
 public class AccountingLedgerApp {
@@ -17,7 +16,10 @@ public class AccountingLedgerApp {
 
     public static void main(String[] args) {
        loadTransactions();
-        mainMenu();
+//        mainMenu();
+        // Test Amount
+        double test = promptAmount();
+        System.out.print(test);
     }
 
     public static void loadTransactions() {
@@ -70,9 +72,26 @@ public class AccountingLedgerApp {
         System.out.println(separator);
     }
 
-    public static String promptText(){
+    public static String promptText() {
+        // TODO: HANDLE non-string types?
         String text = scanner.nextLine();
-        return text;
+        return text.trim().toLowerCase();
+    }
+
+    public static double promptAmount() {
+        // TODO: PARSE to .2f during input?
+        String text = null;
+        double amount = 0;
+
+        try {
+            text = scanner.nextLine().trim();
+            amount = Double.parseDouble(text);
+
+        } catch (NumberFormatException e) {
+            System.out.println("ERROR: Input not <double>");
+        }
+
+        return amount;
     }
 
     public static void mainMenu() {
@@ -90,7 +109,7 @@ public class AccountingLedgerApp {
 
             String option = promptText();
 
-            switch (option.toLowerCase()) {
+            switch (option) {
                 case "d" -> System.out.println("addDeposit()");
                 case "p" -> System.out.println("makePayment()");
                 case "l" -> printTransactions(ledger);
