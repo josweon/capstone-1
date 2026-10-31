@@ -52,7 +52,9 @@ public class AccountingLedgerApp {
         String rowFormat = "| %-10s | %-8s | %-20s | %-20s | $%-9.2f | %n";
 
         String separator = "-".repeat(84);
+        String heading = " ".repeat(30);
 
+        System.out.println(heading + "==* L E D G E R *==");
         System.out.println(separator);
         System.out.printf(rowFormatHeading, "Date", "Time", "Description", "Vendor", "Amount");
         System.out.println(separator);
@@ -82,7 +84,7 @@ public class AccountingLedgerApp {
                 
                 Enter option:\s""";
 
-        Boolean exit = false;
+        boolean exit = false;
         do {
             System.out.print(menu);
 
