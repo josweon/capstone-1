@@ -1,8 +1,12 @@
 ## Current tasks
 `Transaction` + `loadTransactions()` + `printTransactions()` → `displayAll()` works.
 - [x] Transaction class implemented
-- [ ] Pull data into ArrayList<Transaction> in main app
+- [x] Pull data into ArrayList<Transaction> in main app
+- [x] Basic print transaction
+- [x] Add fancy columns
 
+NOT MANDATORY:
+- add description lenght (20 chars)
 ## General Ideas  
 
 - [ ] Read up on using lanterna for TUI: https://github.com/mabe02/lanterna

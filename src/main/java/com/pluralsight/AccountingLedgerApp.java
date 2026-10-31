@@ -11,11 +11,15 @@ import java.util.Scanner;
 public class AccountingLedgerApp {
     static Scanner scanner = new Scanner(System.in);
     static ArrayList<Transaction> ledger = new ArrayList<>();
+    static DateTimeFormatter dateOnly = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    static DateTimeFormatter timeOnly = DateTimeFormatter.ofPattern("HH:mm:ss");
 
     public static void main(String[] args) {
-        DateTimeFormatter dateOnly = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        DateTimeFormatter timeOnly = DateTimeFormatter.ofPattern("HH-mm-ss");
+        loadTransactions();
+        printTransactions();
+    }
 
+    public static void loadTransactions() {
         try {
             BufferedReader bufReader = new BufferedReader(new FileReader("src/main/resources/transactions.csv"));
             // TODO: HANDLE first line safely
@@ -40,10 +44,26 @@ public class AccountingLedgerApp {
         } catch (IOException e) {
             System.out.println("ERROR: Cannot read file" + e.getMessage());
         }
+    }
 
-        // Test ledger
+    public static void printTransactions() {
+        String rowFormatHeading = "| %-10s | %-8s | %-20s | %-20s | %-10s | %n";
+        String rowFormat = "| %-10s | %-8s | %-20s | %-20s | $%-10.2f | %n";
+
+        String separator = "-".repeat(84);
+
+        System.out.println(separator);
+        System.out.printf(rowFormatHeading, "Date", "Time", "Description", "Vendor", "Amount");
+        System.out.println(separator);
+
         for (Transaction t: ledger) {
-            System.out.println(t.toString());
+            System.out.printf( rowFormat,
+                    t.getDateTime().format(dateOnly),
+                    t.getDateTime().format(timeOnly),
+                    t.getDescription(),
+                    t.getVendor(),
+                    t.getAmount());
         }
+        System.out.println(separator);
     }
 }
