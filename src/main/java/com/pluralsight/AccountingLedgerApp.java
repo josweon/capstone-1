@@ -17,7 +17,6 @@ public class AccountingLedgerApp {
     public static void main(String[] args) {
        loadTransactions();
         showHomeScreen();
-
     }
 
     public static void loadTransactions() {
@@ -47,19 +46,20 @@ public class AccountingLedgerApp {
         }
     }
 
-    public static void printTransactions(ArrayList<Transaction> transactions) {
+    public static void displayTransactions(ArrayList<Transaction> transactions, String transType) {
         String rowFormatHeading = "| %-10s | %-8s | %-20s | %-20s | %-10s | %n";
         String rowFormat = "| %-10s | %-8s | %-20s | %-20s | $%-9.2f | %n";
 
         String separator = "-".repeat(84);
         String heading = " ".repeat(25);
 
+        String test = transType;
         System.out.println(heading + "==* T R A N S A C T I O N S *==");
         System.out.println(separator);
         System.out.printf(rowFormatHeading, "Date", "Time", "Description", "Vendor", "Amount");
         System.out.println(separator);
 
-        for (Transaction t: ledger) {
+        for (Transaction t: transactions) {
             System.out.printf( rowFormat,
                     t.getDateTime().format(dateOnly),
                     t.getDateTime().format(timeOnly),
@@ -70,6 +70,47 @@ public class AccountingLedgerApp {
         System.out.println(separator);
     }
 
+    // TODO: displayDeposits()
+    public static void displayDeposits() {
+        // create displayTransaction that takes in a sorted array
+        String rowFormatHeading = "| %-10s | %-8s | %-20s | %-20s | %-10s | %n";
+        String rowFormat = "| %-10s | %-8s | %-20s | %-20s | $%-9.2f | %n";
+
+        String separator = "-".repeat(84);
+        String heading = " ".repeat(30);
+
+        System.out.println(heading + "==* D E P O S I T S *==");
+        System.out.println(separator);
+        System.out.printf(rowFormatHeading, "Date", "Time", "Description", "Vendor", "Amount");
+        System.out.println(separator);
+
+        for (Transaction t: ledger) {
+            if (t.isDeposit()) {
+                System.out.printf(rowFormat,
+                        t.getDateTime().format(dateOnly),
+                        t.getDateTime().format(timeOnly),
+                        t.getDescription(),
+                        t.getVendor(),
+                        t.getAmount());
+            }
+        }
+        System.out.println(separator);
+    }
+
+    public static ArrayList<Transaction> loadDeposits() {
+        ArrayList<Transaction> deposits = new ArrayList<>();
+        for (Transaction t: ledger) {
+            if (t.isDeposit()) {
+                deposits.add(t);
+            }
+        }
+        return deposits;
+    }
+
+    // TODO: displayPayments()
+    // TODO: displayReports()
+
+    //region Prompters
     public static String promptText() {
         // TODO: HANDLE non-string types?
         String text = scanner.nextLine();
@@ -90,7 +131,9 @@ public class AccountingLedgerApp {
 
         return amount;
     }
+    //endregion
 
+    //region Menus
     public static void showHomeScreen() {
         String menu = """
                 ==* H O M E S C R E E N *=
@@ -109,7 +152,6 @@ public class AccountingLedgerApp {
             switch (option) {
                 case "d" -> System.out.println("addDeposit()");
                 case "p" -> System.out.println("makePayment()");
-                // TODO: Replace with showLedgerScreen()
                 case "l" -> showLedgerScreen();
                 case "x" -> exit = true;
                 default -> System.out.println("Invalid Operation");
@@ -117,6 +159,7 @@ public class AccountingLedgerApp {
         } while (!exit);
         System.out.println("Thank you for using JDL services!");
     }
+
     public static void showLedgerScreen() {
         String menu = """
                 \t==* L E D G E R *==
@@ -134,16 +177,14 @@ public class AccountingLedgerApp {
             String option = promptText();
 
             switch (option) {
-                case "a" -> printTransactions(ledger);
-                            // TODO: displayDeposits()
-                case "d" -> System.out.println("\tdisplayDeposits()");
-                            // TODO: displayPayments()
+                case "a" -> displayTransactions(ledger, "ledger");
+                case "d" -> displayTransactions(loadDeposits(), "deposit");
                 case "p" -> System.out.println("\tdisplayPayments()");
-                            // TODO: displayReports()
                 case "r" -> System.out.println("\tdisplayReports()");
                 case "h" -> exit = true;
                 default -> System.out.println("Invalid Operation");
             }
         } while(!exit);
     }
+    //endregion
 }

@@ -1,8 +1,8 @@
 ## Current tasks
 ## **5.** Home menu + `promptText` / `promptAmount` + `addDeposit()` / `makePayment()` + `recordTransaction()` + `saveTransaction()`.
-- [x] Home menu pattern (`addDeposit`, `makePayment`, `displayLedger`, `exitApplication (use daves done pattern)`)
-- [x] promptText method
-- [x] promptAmount method
+- [ ] Add switch to display transactions for different tables
+- [ ] Implement loadPayments;
+- [ ] Tidy things up
 
 NOT MANDATORY:
 - add description length (20 chars)
