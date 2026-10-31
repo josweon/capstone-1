@@ -2,7 +2,7 @@
 ## **5.** Home menu + `promptText` / `promptAmount` + `addDeposit()` / `makePayment()` + `recordTransaction()` + `saveTransaction()`.
 - [x] Home menu pattern (`addDeposit`, `makePayment`, `displayLedger`, `exitApplication (use daves done pattern)`)
 - [x] promptText method
-- [ ] promptAmount method
+- [x] promptAmount method
 
 NOT MANDATORY:
 - add description length (20 chars)

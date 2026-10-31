@@ -16,10 +16,8 @@ public class AccountingLedgerApp {
 
     public static void main(String[] args) {
        loadTransactions();
-//        mainMenu();
-        // Test Amount
-        double test = promptAmount();
-        System.out.print(test);
+        showHomeScreen();
+
     }
 
     public static void loadTransactions() {
@@ -54,9 +52,9 @@ public class AccountingLedgerApp {
         String rowFormat = "| %-10s | %-8s | %-20s | %-20s | $%-9.2f | %n";
 
         String separator = "-".repeat(84);
-        String heading = " ".repeat(30);
+        String heading = " ".repeat(25);
 
-        System.out.println(heading + "==* L E D G E R *==");
+        System.out.println(heading + "==* T R A N S A C T I O N S *==");
         System.out.println(separator);
         System.out.printf(rowFormatHeading, "Date", "Time", "Description", "Vendor", "Amount");
         System.out.println(separator);
@@ -79,7 +77,6 @@ public class AccountingLedgerApp {
     }
 
     public static double promptAmount() {
-        // TODO: PARSE to .2f during input?
         String text = null;
         double amount = 0;
 
@@ -94,8 +91,9 @@ public class AccountingLedgerApp {
         return amount;
     }
 
-    public static void mainMenu() {
+    public static void showHomeScreen() {
         String menu = """
+                ==* H O M E S C R E E N *=
                 D) Add Deposit
                 P) Make Payment (Debit)
                 L) Ledger
@@ -106,17 +104,46 @@ public class AccountingLedgerApp {
         boolean exit = false;
         do {
             System.out.print(menu);
-
             String option = promptText();
 
             switch (option) {
                 case "d" -> System.out.println("addDeposit()");
                 case "p" -> System.out.println("makePayment()");
-                case "l" -> printTransactions(ledger);
+                // TODO: Replace with showLedgerScreen()
+                case "l" -> showLedgerScreen();
                 case "x" -> exit = true;
                 default -> System.out.println("Invalid Operation");
             }
         } while (!exit);
         System.out.println("Thank you for using JDL services!");
+    }
+    public static void showLedgerScreen() {
+        String menu = """
+                \t==* L E D G E R *==
+                \tA) All
+                \tD) Deposits
+                \tP) Payments
+                \tR) Reports
+                \tH) <-Homescreen
+                
+                \tEnter option:\s""";
+
+        boolean exit = false;
+        do {
+            System.out.print(menu);
+            String option = promptText();
+
+            switch (option) {
+                case "a" -> printTransactions(ledger);
+                            // TODO: displayDeposits()
+                case "d" -> System.out.println("\tdisplayDeposits()");
+                            // TODO: displayPayments()
+                case "p" -> System.out.println("\tdisplayPayments()");
+                            // TODO: displayReports()
+                case "r" -> System.out.println("\tdisplayReports()");
+                case "h" -> exit = true;
+                default -> System.out.println("Invalid Operation");
+            }
+        } while(!exit);
     }
 }
