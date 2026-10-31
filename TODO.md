@@ -1,12 +1,11 @@
 ## Current tasks
-`Transaction` + `loadTransactions()` + `printTransactions()` → `displayAll()` works.
-- [x] Transaction class implemented
-- [x] Pull data into ArrayList<Transaction> in main app
-- [x] Basic print transaction
-- [x] Add fancy columns
+## **5.** Home menu + `promptText` / `promptAmount` + `addDeposit()` / `makePayment()` + `recordTransaction()` + `saveTransaction()`.
+- [ ] Home menu pattern (`addDeposit`, `makePayment`, `displayLedger`, `exitApplication (use daves done pattern)`)
+- [ ] promptText method
+- [ ] promptAmount method
 
 NOT MANDATORY:
-- add description lenght (20 chars)
+- add description length (20 chars)
 ## General Ideas  
 
 - [ ] Read up on using lanterna for TUI: https://github.com/mabe02/lanterna
@@ -84,7 +83,7 @@ Lanterna later calls `filterMonthToDate()` and `recordTransaction(...)` directly
 
 ## Phase 1 – MVP
 
-- [ ] **4.** `Transaction` + `loadTransactions()` + `printTransactions()` → `displayAll()` works.
+- [X] **4.** `Transaction` + `loadTransactions()` + `printTransactions()` → `displayAll()` works.
 - [ ] **5.** Home menu + `promptText` / `promptAmount` + `addDeposit()` / `makePayment()` + `recordTransaction()` + `saveTransaction()`.
 - [ ] **6.** Ledger menu: All / Deposits / Payments, newest first.
 - [ ] **7.** Reports menu, options 1–5 and 0 Back, using `filter...()` + `printTransactions()`.

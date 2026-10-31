@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Locale;
 import java.util.Scanner;
 
 public class AccountingLedgerApp {
@@ -15,8 +16,8 @@ public class AccountingLedgerApp {
     static DateTimeFormatter timeOnly = DateTimeFormatter.ofPattern("HH:mm:ss");
 
     public static void main(String[] args) {
-        loadTransactions();
-        printTransactions();
+       loadTransactions();
+        mainMenu();
     }
 
     public static void loadTransactions() {
@@ -46,9 +47,9 @@ public class AccountingLedgerApp {
         }
     }
 
-    public static void printTransactions() {
+    public static void printTransactions(ArrayList<Transaction> transactions) {
         String rowFormatHeading = "| %-10s | %-8s | %-20s | %-20s | %-10s | %n";
-        String rowFormat = "| %-10s | %-8s | %-20s | %-20s | $%-10.2f | %n";
+        String rowFormat = "| %-10s | %-8s | %-20s | %-20s | $%-9.2f | %n";
 
         String separator = "-".repeat(84);
 
@@ -65,5 +66,36 @@ public class AccountingLedgerApp {
                     t.getAmount());
         }
         System.out.println(separator);
+    }
+
+    public static String promptText(){
+        String text = scanner.nextLine();
+        return text;
+    }
+
+    public static void mainMenu() {
+        String menu = """
+                D) Add Deposit
+                P) Make Payment (Debit)
+                L) Ledger
+                X) Exit
+                
+                Enter option:\s""";
+
+        Boolean exit = false;
+        do {
+            System.out.print(menu);
+
+            String option = promptText();
+
+            switch (option.toLowerCase()) {
+                case "d" -> System.out.println("addDeposit()");
+                case "p" -> System.out.println("makePayment()");
+                case "l" -> printTransactions(ledger);
+                case "x" -> exit = true;
+                default -> System.out.println("Invalid Operation");
+            }
+        } while (!exit);
+        System.out.println("Thank you for using JDL services!");
     }
 }
