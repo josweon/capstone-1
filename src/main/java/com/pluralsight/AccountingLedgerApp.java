@@ -1,8 +1,6 @@
 package com.pluralsight;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.sql.Array;
 import java.sql.SQLOutput;
 import java.time.LocalDateTime;
@@ -16,6 +14,9 @@ public class AccountingLedgerApp {
     static ArrayList<Transaction> ledger = new ArrayList<>();
     static DateTimeFormatter dateOnly = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     static DateTimeFormatter timeOnly = DateTimeFormatter.ofPattern("HH:mm:ss");
+
+    static String PROD = "src/main/resources/transactions.csv";
+    static String TEST = "src/main/resources/test-transactions.csv";
 
     public static void main(String[] args) {
        loadTransactions();
@@ -187,7 +188,18 @@ public class AccountingLedgerApp {
         } while (!done.equalsIgnoreCase("n"));
         System.out.print("\n");
 
+
         // TODO: saveTransaction()
+        if (!receipt.isEmpty()) {
+            System.out.println("Would like to record the transaction? (y/n): ");
+
+            try {
+                BufferedWriter bufWriter = new BufferedWriter(new FileWriter(TEST, true));
+            } catch (IOException e) {
+                System.out.println("ERROR: Cannot write to file " + e.getMessage());
+            }
+        }
+
     }
 
     public static void recordTransaction(Transaction t, ArrayList<Transaction> receipt) {

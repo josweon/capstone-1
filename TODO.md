@@ -1,8 +1,8 @@
 ## Current tasks
 ## **5.** Home menu + `promptText` / `promptAmount` + `addDeposit()` / `makePayment()` + `recordTransaction()` + `saveTransaction()`.
-- [] addDeposit()
+- [x] addDeposit()
 - [] makePayment()
-- [] recordTransaction()
+- [x] recordTransaction()
 - [] saveTransaction()
 - [] tidy code
 
