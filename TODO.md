@@ -1,8 +1,8 @@
 ## Current tasks
 ## **5.** Home menu + `promptText` / `promptAmount` + `addDeposit()` / `makePayment()` + `recordTransaction()` + `saveTransaction()`.
 - [x] Add switch to display transactions for different tables
-- [ ] Implement loadPayments;
-- [ ] Tidy things up
+- [x] Implement loadPayments;
+- [x] Tidy things up
 
 NOT MANDATORY:
 - add description length (20 chars)

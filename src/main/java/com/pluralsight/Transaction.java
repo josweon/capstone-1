@@ -32,6 +32,8 @@ public class Transaction {
         return amount;
     }
     //endregion
+
+    //region Checkers
     public boolean isDeposit(){
         return this.amount > 0;
     }
@@ -39,6 +41,7 @@ public class Transaction {
     public boolean isPayment(){
         return this.amount < 0;
     }
+    //endregion
 
     // For debugging
     @Override

@@ -1,6 +1,5 @@
 package com.pluralsight;
 
-
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -21,33 +20,7 @@ public class AccountingLedgerApp {
         showHomeScreen();
     }
 
-    public static void loadTransactions() {
-        try {
-            BufferedReader bufReader = new BufferedReader(new FileReader("src/main/resources/transactions.csv"));
-            // TODO: HANDLE first line safely
-            bufReader.readLine();
-
-            String input;
-            while((input = bufReader.readLine()) != null){
-                // TODO: HANDLE missing delimiter
-                String[] tokens = input.split("\\|");
-
-                // date|time|description|vendor|amount
-                String formatDateTime = String.format("%sT%s", tokens[0], tokens[1]);
-                LocalDateTime dateTime = LocalDateTime.parse(formatDateTime);
-                String description = tokens[2];
-                String vendor = tokens[3];
-                double amount = Double.parseDouble(tokens[4]);
-
-                ledger.add(new Transaction(dateTime, description, vendor, amount));
-            }
-            bufReader.close();
-
-        } catch (IOException e) {
-            System.out.println("ERROR: Cannot read file" + e.getMessage());
-        }
-    }
-
+    //region Displays
     public static void displayTransactions(ArrayList<Transaction> transactions, String transType) {
         String rowFormatHeading = "| %-10s | %-8s | %-20s | %-20s | %-10s | %n";
         String rowFormat = "| %-10s | %-8s | %-20s | %-20s | $%-9.2f | %n";
@@ -80,6 +53,35 @@ public class AccountingLedgerApp {
         }
         System.out.println(separator);
     }
+    //endregion
+
+    //region Loaders
+    public static void loadTransactions() {
+        try {
+            BufferedReader bufReader = new BufferedReader(new FileReader("src/main/resources/transactions.csv"));
+            // TODO: HANDLE first line safely
+            bufReader.readLine();
+
+            String input;
+            while((input = bufReader.readLine()) != null){
+                // TODO: HANDLE missing delimiter
+                String[] tokens = input.split("\\|");
+
+                // date|time|description|vendor|amount
+                String formatDateTime = String.format("%sT%s", tokens[0], tokens[1]);
+                LocalDateTime dateTime = LocalDateTime.parse(formatDateTime);
+                String description = tokens[2];
+                String vendor = tokens[3];
+                double amount = Double.parseDouble(tokens[4]);
+
+                ledger.add(new Transaction(dateTime, description, vendor, amount));
+            }
+            bufReader.close();
+
+        } catch (IOException e) {
+            System.out.println("ERROR: Cannot read file" + e.getMessage());
+        }
+    }
 
     public static ArrayList<Transaction> loadDeposits() {
         ArrayList<Transaction> deposits = new ArrayList<>();
@@ -100,7 +102,7 @@ public class AccountingLedgerApp {
         }
         return payments;
     }
-    // TODO: displayReports()
+    //endregion
 
     //region Prompters
     public static String promptText() {
