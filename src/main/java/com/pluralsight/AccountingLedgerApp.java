@@ -62,7 +62,7 @@ public class AccountingLedgerApp {
     public static void loadTransactions() {
         try {
             // TODO: **TESTING**
-            BufferedReader bufReader = new BufferedReader(new FileReader("src/main/resources/test-transactions.csv"));
+            BufferedReader bufReader = new BufferedReader(new FileReader(TEST));
             // TODO: HANDLE first line safely
             bufReader.readLine();
 
@@ -187,20 +187,37 @@ public class AccountingLedgerApp {
 
         } while (!done.equalsIgnoreCase("n"));
         System.out.print("\n");
-
-
-        // TODO: saveTransaction()
-        if (!receipt.isEmpty()) {
-            System.out.println("Would like to record the transaction? (y/n): ");
-
-            try {
-                BufferedWriter bufWriter = new BufferedWriter(new FileWriter(TEST, true));
-            } catch (IOException e) {
-                System.out.println("ERROR: Cannot write to file " + e.getMessage());
-            }
-        }
-
     }
+
+//    public static void saveTransaction (ArrayList<Transaction> receipt) {
+//        // TODO: saveTransaction()
+//        if (!receipt.isEmpty()) {
+//            string input = null;
+//            do {
+//                System.out.print("Would like to record the transaction? (y/n): ");
+//                input = promptText();
+//
+//                try {
+//                    BufferedWriter bufWriter = new BufferedWriter(new FileWriter(TEST, true));
+//                    for (Transaction t : receipt) {
+//                        String date = (t.getDateTime()).format(dateOnly);
+//                        String time = (t.getDateTime()).format(timeOnly);
+//                        String record = String.format("%s|%s|%s|%s|%.2f",
+//                                date,
+//                                time,
+//                                t.getDescription(),
+//                                t.getVendor(),
+//                                t.getAmount());
+//
+//                        bufWriter.write(record);
+//                    }
+//
+//                } catch (IOException e) {
+//                    System.out.println("ERROR: Cannot write to file " + e.getMessage());
+//                }
+//            } while(input.equals)
+//        }
+//    }
 
     public static void recordTransaction(Transaction t, ArrayList<Transaction> receipt) {
         ledger.add(t);
