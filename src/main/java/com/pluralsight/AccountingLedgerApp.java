@@ -81,33 +81,6 @@ public class AccountingLedgerApp {
         System.out.println(separator);
     }
 
-    // TODO: displayDeposits()
-    public static void displayDeposits() {
-        // create displayTransaction that takes in a sorted array
-        String rowFormatHeading = "| %-10s | %-8s | %-20s | %-20s | %-10s | %n";
-        String rowFormat = "| %-10s | %-8s | %-20s | %-20s | $%-9.2f | %n";
-
-        String separator = "-".repeat(84);
-        String heading = " ".repeat(30);
-
-        System.out.println(heading + "==* D E P O S I T S *==");
-        System.out.println(separator);
-        System.out.printf(rowFormatHeading, "Date", "Time", "Description", "Vendor", "Amount");
-        System.out.println(separator);
-
-        for (Transaction t: ledger) {
-            if (t.isDeposit()) {
-                System.out.printf(rowFormat,
-                        t.getDateTime().format(dateOnly),
-                        t.getDateTime().format(timeOnly),
-                        t.getDescription(),
-                        t.getVendor(),
-                        t.getAmount());
-            }
-        }
-        System.out.println(separator);
-    }
-
     public static ArrayList<Transaction> loadDeposits() {
         ArrayList<Transaction> deposits = new ArrayList<>();
         for (Transaction t: ledger) {
@@ -200,8 +173,38 @@ public class AccountingLedgerApp {
                 case "a" -> displayTransactions(ledger, "a");
                 case "d" -> displayTransactions(loadDeposits(), "d");
                 case "p" -> displayTransactions(loadPayments(), "p");
-                case "r" -> System.out.println("\tdisplayReports()");
+                case "r" -> showReportsScreen();
                 case "h" -> exit = true;
+                default -> System.out.println("Invalid Operation");
+            }
+        } while(!exit);
+    }
+
+    // TODO: Report menu screen
+    public static void showReportsScreen() {
+        String menu = """
+                \t\t==* R E P O R T S *==
+                \t\t1) Month To Date
+                \t\t2) Previous Month
+                \t\t3) Year to Date
+                \t\t4) Previous Year
+                \t\t5) Search by Vendor
+                \t\t0) <- Go back
+                
+                \t\tEnter option:\s""";
+
+        boolean exit = false;
+        do {
+            System.out.print(menu);
+            String option = promptText();
+
+            switch (option) {
+                case "1" -> System.out.println("\t\tmonthToDate");
+                case "2" -> System.out.println("\t\tpreviousMonth");
+                case "3" -> System.out.println("\t\tyearToDate()");
+                case "4" -> System.out.println("\t\tdisplayReports()");
+                case "5" -> System.out.println("\t\tsearchByVendor()");
+                case "0" -> exit = true;
                 default -> System.out.println("Invalid Operation");
             }
         } while(!exit);
