@@ -1,5 +1,6 @@
 package com.pluralsight;
 
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -53,8 +54,17 @@ public class AccountingLedgerApp {
         String separator = "-".repeat(84);
         String heading = " ".repeat(25);
 
-        String test = transType;
-        System.out.println(heading + "==* T R A N S A C T I O N S *==");
+        String transHeader = "==* T R A N S A C T I O N S *==";
+        String depositHeader = "==* D E P O S I T S *==";
+        String paymentsHeader = "==* P A Y M E N T S *==";
+
+        switch (transType) {
+            case "a" -> System.out.println(heading + transHeader);
+            case "d" -> System.out.println(heading + depositHeader);
+            case "p" -> System.out.println(heading + paymentsHeader);
+            default -> System.out.println("Invalid operation");
+        }
+
         System.out.println(separator);
         System.out.printf(rowFormatHeading, "Date", "Time", "Description", "Vendor", "Amount");
         System.out.println(separator);
@@ -177,7 +187,7 @@ public class AccountingLedgerApp {
             String option = promptText();
 
             switch (option) {
-                case "a" -> displayTransactions(ledger, "ledger");
+                case "a" -> displayTransactions(ledger, "a");
                 case "d" -> displayTransactions(loadDeposits(), "deposit");
                 case "p" -> System.out.println("\tdisplayPayments()");
                 case "r" -> System.out.println("\tdisplayReports()");
