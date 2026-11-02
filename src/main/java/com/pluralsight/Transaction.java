@@ -37,7 +37,7 @@ public class Transaction {
     }
 
     public boolean isPayment(){
-        return this.amount > 0;
+        return this.amount < 0;
     }
 
     // For debugging

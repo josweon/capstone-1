@@ -1,6 +1,6 @@
 ## Current tasks
 ## **5.** Home menu + `promptText` / `promptAmount` + `addDeposit()` / `makePayment()` + `recordTransaction()` + `saveTransaction()`.
-- [ ] Add switch to display transactions for different tables
+- [x] Add switch to display transactions for different tables
 - [ ] Implement loadPayments;
 - [ ] Tidy things up
 

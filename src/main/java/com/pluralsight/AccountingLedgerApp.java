@@ -11,6 +11,7 @@ import java.util.Scanner;
 
 public class AccountingLedgerApp {
     static Scanner scanner = new Scanner(System.in);
+    // TODO: Dates need to be in chronological order (current earliest -> lastest)*
     static ArrayList<Transaction> ledger = new ArrayList<>();
     static DateTimeFormatter dateOnly = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     static DateTimeFormatter timeOnly = DateTimeFormatter.ofPattern("HH:mm:ss");
@@ -117,7 +118,15 @@ public class AccountingLedgerApp {
         return deposits;
     }
 
-    // TODO: displayPayments()
+    public static ArrayList<Transaction> loadPayments() {
+        ArrayList<Transaction> payments = new ArrayList<>();
+        for (Transaction t: ledger) {
+            if (t.isPayment()) {
+                payments.add(t);
+            }
+        }
+        return payments;
+    }
     // TODO: displayReports()
 
     //region Prompters
@@ -187,9 +196,10 @@ public class AccountingLedgerApp {
             String option = promptText();
 
             switch (option) {
+                // TODO: Change ledger to loadTransactions()?
                 case "a" -> displayTransactions(ledger, "a");
-                case "d" -> displayTransactions(loadDeposits(), "deposit");
-                case "p" -> System.out.println("\tdisplayPayments()");
+                case "d" -> displayTransactions(loadDeposits(), "d");
+                case "p" -> displayTransactions(loadPayments(), "p");
                 case "r" -> System.out.println("\tdisplayReports()");
                 case "h" -> exit = true;
                 default -> System.out.println("Invalid Operation");
