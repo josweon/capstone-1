@@ -3,6 +3,7 @@ package com.pluralsight;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.sql.SQLOutput;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -143,8 +144,10 @@ public class AccountingLedgerApp {
             System.out.print(menu);
             String option = promptText();
 
+            // TODO: NOW3 recordTransactions, saveTransactions
             switch (option) {
-                case "d" -> System.out.println("addDeposit()");
+                case "d" -> addDeposit();
+                // TODO: NOW2 makePayment
                 case "p" -> System.out.println("makePayment()");
                 case "l" -> showLedgerScreen();
                 case "x" -> exit = true;
@@ -152,6 +155,26 @@ public class AccountingLedgerApp {
             }
         } while (!exit);
         System.out.println("Thank you for using JDL services!");
+    }
+
+    // TODO: NOW1 addDeposit
+    public static void addDeposit () {
+        //*prompt the user for the deposit information and save it to the CSV file
+        System.out.println("\t==* A D D * D E P O S I T *==");
+        System.out.print("Enter amount: $");
+        double amount = promptAmount();
+        System.out.print("Enter description: ");
+        // TODO: Do while for description to valid
+        String description = scanner.nextLine().trim();
+        System.out.print("Enter vendor: ");
+        String vendor = scanner.nextLine().trim();
+
+        LocalDateTime now = LocalDateTime.now();
+
+        Transaction newTrans = new Transaction(now, description, vendor, amount);
+
+        // test newTrans
+        System.out.println(newTrans.toString());
     }
 
     public static void showLedgerScreen() {
