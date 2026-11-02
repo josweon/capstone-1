@@ -59,7 +59,8 @@ public class AccountingLedgerApp {
     //region Loaders
     public static void loadTransactions() {
         try {
-            BufferedReader bufReader = new BufferedReader(new FileReader("src/main/resources/transactions.csv"));
+            // TODO: **TESTING**
+            BufferedReader bufReader = new BufferedReader(new FileReader("src/main/resources/test-transactions.csv"));
             // TODO: HANDLE first line safely
             bufReader.readLine();
 
@@ -173,8 +174,23 @@ public class AccountingLedgerApp {
 
         Transaction newTrans = new Transaction(now, description, vendor, amount);
 
-        // test newTrans
-        System.out.println(newTrans.toString());
+        // recordTransaction
+        ledger.add(newTrans);
+        String rowFormatHeading = "| %-10s | %-8s | %-20s | %-20s | %-10s | %n";
+        String rowFormat = "| %-10s | %-8s | %-20s | %-20s | $%-9.2f | %n";
+
+        String separator = "-".repeat(84);
+
+        System.out.println(separator);
+        System.out.printf(rowFormatHeading, "Date", "Time", "Description", "Vendor", "Amount");
+        System.out.println(separator);
+
+        System.out.printf( rowFormat,
+                newTrans.getDateTime().format(dateOnly),
+                newTrans.getDateTime().format(timeOnly),
+                newTrans.getDescription(),
+                newTrans.getVendor(),
+                newTrans.getAmount());
     }
 
     public static void showLedgerScreen() {
