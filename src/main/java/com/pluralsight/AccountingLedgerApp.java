@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class AccountingLedgerApp {
+    //region Initializers
     static Scanner scanner = new Scanner(System.in);
     // TODO: Dates need to be in chronological order (current earliest -> lastest)*
     static ArrayList<Transaction> ledger = new ArrayList<>();
@@ -15,9 +16,8 @@ public class AccountingLedgerApp {
 
     static String PROD = "src/main/resources/transactions.csv";
     static String TEST = "src/main/resources/test-transactions.csv";
-
+    //endregion
     public static void main(String[] args) {
-        loadTransactions();
         showHomeScreen();
     }
 
@@ -54,12 +54,31 @@ public class AccountingLedgerApp {
         }
         System.out.println(separator);
     }
+
+    public static void displayReceipt(ArrayList<Transaction> receipt) {
+        String rowFormatHeading = "| %-10s | %-8s | %-20s | %-20s | %-10s | %n";
+        String rowFormat = "| %-10s | %-8s | %-20s | %-20s | $%-9.2f | %n";
+
+        String separator = "-".repeat(84);
+
+        System.out.println(separator);
+        System.out.printf(rowFormatHeading, "Date", "Time", "Description", "Vendor", "Amount");
+        System.out.println(separator);
+
+        for (Transaction t : receipt) {
+            System.out.printf(rowFormat,
+                    t.getDateTime().format(dateOnly),
+                    t.getDateTime().format(timeOnly),
+                    t.getDescription(),
+                    t.getVendor(),
+                    t.getAmount());
+        }
+    }
     //endregion
 
     //region Loaders
     public static void loadTransactions() {
         try {
-            // TODO: **TESTING**
             BufferedReader bufReader = new BufferedReader(new FileReader(TEST));
             // TODO: HANDLE first line safely
             bufReader.readLine();
@@ -131,6 +150,7 @@ public class AccountingLedgerApp {
 
     //region Menus
     public static void showHomeScreen() {
+        loadTransactions();
         String menu = """
                 ==* H O M E S C R E E N *=
                 D) Add Deposit
@@ -155,91 +175,6 @@ public class AccountingLedgerApp {
             }
         } while (!exit);
         System.out.println("Thank you for using JDL services!");
-    }
-
-    public static void addDeposit() {
-        System.out.println("\t==* A D D * D E P O S I T *==");
-        ArrayList<Transaction> receipt = new ArrayList<>();
-
-        String done;
-        do {
-            System.out.print("\tEnter amount: $");
-            double amount = promptAmount();
-            System.out.print("\tEnter description: ");
-            // TODO: Do while for description to valid
-            String description = scanner.nextLine().trim();
-            System.out.print("\tEnter vendor: ");
-            String vendor = scanner.nextLine().trim();
-
-            LocalDateTime now = LocalDateTime.now();
-
-            Transaction newTrans = new Transaction(now, description, vendor, amount);
-            recordTransaction(newTrans, receipt);
-
-            System.out.print("Would you like to add another? (y/n): ");
-            done = promptText();
-
-        } while (!done.equalsIgnoreCase("n"));
-        System.out.print("\n");
-
-        if (!receipt.isEmpty()) {
-            saveTransaction(receipt);
-        }
-    }
-
-    public static void saveTransaction(ArrayList<Transaction> receipt) {
-        String input;
-        System.out.print("Save to ledger? (y/n): ");
-        input = promptText();
-
-        if (input.equalsIgnoreCase("y")) {
-            try {
-                BufferedWriter bufWriter = new BufferedWriter(new FileWriter(TEST, true));
-                for (Transaction t : receipt) {
-                    String date = (t.getDateTime()).format(dateOnly);
-                    String time = (t.getDateTime()).format(timeOnly);
-                    String record = String.format("%n%s|%s|%s|%s|%.2f",
-                            date,
-                            time,
-                            t.getDescription(),
-                            t.getVendor(),
-                            t.getAmount());
-
-                    bufWriter.write(record);
-                }
-                bufWriter.close();
-            } catch (IOException e) {
-                System.out.println("ERROR: Cannot write to file " + e.getMessage());
-            }
-        }
-    }
-
-
-    public static void recordTransaction(Transaction t, ArrayList<Transaction> receipt) {
-//        ledger.add(t);
-        receipt.add(t);
-        System.out.println("\nsuccess!");
-        printReceipt(receipt);
-    }
-
-    public static void printReceipt(ArrayList<Transaction> receipt) {
-        String rowFormatHeading = "| %-10s | %-8s | %-20s | %-20s | %-10s | %n";
-        String rowFormat = "| %-10s | %-8s | %-20s | %-20s | $%-9.2f | %n";
-
-        String separator = "-".repeat(84);
-
-        System.out.println(separator);
-        System.out.printf(rowFormatHeading, "Date", "Time", "Description", "Vendor", "Amount");
-        System.out.println(separator);
-
-        for (Transaction t : receipt) {
-            System.out.printf(rowFormat,
-                    t.getDateTime().format(dateOnly),
-                    t.getDateTime().format(timeOnly),
-                    t.getDescription(),
-                    t.getVendor(),
-                    t.getAmount());
-        }
     }
 
     public static void showLedgerScreen() {
@@ -298,6 +233,72 @@ public class AccountingLedgerApp {
                 default -> System.out.println("Invalid Operation");
             }
         } while (!exit);
+    }
+    //endregion
+
+    //region Helpers
+    public static void addDeposit() {
+        System.out.println("\t==* A D D * D E P O S I T *==");
+        ArrayList<Transaction> receipt = new ArrayList<>();
+
+        String done;
+        do {
+            System.out.print("\tEnter amount: $");
+            double amount = promptAmount();
+            System.out.print("\tEnter description: ");
+            // TODO: Do while for description to valid
+            String description = scanner.nextLine().trim();
+            System.out.print("\tEnter vendor: ");
+            String vendor = scanner.nextLine().trim();
+
+            LocalDateTime now = LocalDateTime.now();
+
+            Transaction newTrans = new Transaction(now, description, vendor, amount);
+            recordTransaction(newTrans, receipt);
+
+            System.out.print("Would you like to add another? (y/n): ");
+            done = promptText();
+
+        } while (!done.equalsIgnoreCase("n"));
+        System.out.print("\n");
+
+        if (!receipt.isEmpty()) {
+            saveTransaction(receipt);
+        }
+    }
+
+    public static void saveTransaction(ArrayList<Transaction> receipt) {
+        String input;
+        System.out.print("Save to ledger? (y/n): ");
+        input = promptText();
+
+        if (input.equalsIgnoreCase("y")) {
+            try {
+                BufferedWriter bufWriter = new BufferedWriter(new FileWriter(TEST, true));
+                for (Transaction t : receipt) {
+                    String date = (t.getDateTime()).format(dateOnly);
+                    String time = (t.getDateTime()).format(timeOnly);
+                    String record = String.format("%n%s|%s|%s|%s|%.2f",
+                            date,
+                            time,
+                            t.getDescription(),
+                            t.getVendor(),
+                            t.getAmount());
+
+                    bufWriter.write(record);
+                }
+                bufWriter.close();
+            } catch (IOException e) {
+                System.out.println("ERROR: Cannot write to file " + e.getMessage());
+            }
+        }
+    }
+
+    public static void recordTransaction(Transaction t, ArrayList<Transaction> receipt) {
+        ledger.add(t);
+        receipt.add(t);
+        System.out.println("\nsuccess!");
+        displayReceipt(receipt);
     }
     //endregion
 }

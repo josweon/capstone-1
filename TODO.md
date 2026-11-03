@@ -3,7 +3,7 @@
 - [x] addDeposit()
 - [] makePayment()
 - [x] recordTransaction()
-- [] saveTransaction()
+- [x] saveTransaction()
 - [] tidy code
 
 NOT MANDATORY:
