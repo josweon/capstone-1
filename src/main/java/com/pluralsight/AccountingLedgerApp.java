@@ -4,12 +4,12 @@ import java.io.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Scanner;
 
 public class AccountingLedgerApp {
     //region Initializers
     static Scanner scanner = new Scanner(System.in);
-    // TODO: Dates need to be in chronological order (current earliest -> lastest)*
     static ArrayList<Transaction> ledger = new ArrayList<>();
     static DateTimeFormatter dateOnly = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     static DateTimeFormatter timeOnly = DateTimeFormatter.ofPattern("HH:mm:ss");
@@ -18,6 +18,7 @@ public class AccountingLedgerApp {
     static String TEST = "src/main/resources/test-transactions.csv";
     //endregion
     public static void main(String[] args) {
+        loadTransactions();
         showHomeScreen();
     }
 
@@ -29,9 +30,13 @@ public class AccountingLedgerApp {
         String separator = "-".repeat(84);
         String heading = " ".repeat(25);
 
-        String transHeader = "==* T R A N S A C T I O N S *==";
-        String depositHeader = "==* D E P O S I T S *==";
-        String paymentsHeader = "==* P A Y M E N T S *==";
+        String transHeader           = "==* T R A N S A C T I O N S *==";
+        String depositHeader         = "==* D E P O S I T S *==";
+        String paymentsHeader        = "==* P A Y M E N T S *==";
+        String reportMonthToDate     = "==* M O N T H * T O * D A T E *==";
+        String reportPreviousMonth   = "==* P R E V * M O N T H *==";
+        String reportYearToDate      = "==* Y E A R * T O * D A T E *==";
+        String reportPreviousYear    = "==* P R E V * Y E A R *==";
 
         switch (transType) {
             case "a" -> System.out.println(heading + transHeader);
@@ -150,7 +155,7 @@ public class AccountingLedgerApp {
 
     //region Menus
     public static void showHomeScreen() {
-        loadTransactions();
+        Collections.sort(ledger);
         String menu = """
                 ==* H O M E S C R E E N *=
                 D) Add Deposit
@@ -167,7 +172,6 @@ public class AccountingLedgerApp {
 
             switch (option) {
                 case "d" -> addDeposit();
-                // TODO: NOW2 makePayment
                 case "p" -> makePayment();
                 case "l" -> showLedgerScreen();
                 case "x" -> exit = true;
@@ -233,6 +237,14 @@ public class AccountingLedgerApp {
                 default -> System.out.println("Invalid Operation");
             }
         } while (!exit);
+    }
+    public static ArrayList<Transaction> monthToDate (){
+        ArrayList<Transaction> report = new ArrayList<>();
+        LocalDateTime currentDate = LocalDateTime.now();
+
+        for (Transaction t: ledger){
+        }
+        return report;
     }
     //endregion
 

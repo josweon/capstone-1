@@ -56,6 +56,6 @@ public class Transaction implements Comparable<Transaction> {
 
     @Override
     public int compareTo(Transaction o) {
-        return this.dateTime.compareTo(o.getDateTime());
+        return o.getDateTime().compareTo(this.dateTime);
     }
 }
