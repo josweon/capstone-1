@@ -11,12 +11,14 @@ public class AccountingLedgerApp {
     //region Initializers
     static Scanner scanner = new Scanner(System.in);
     static ArrayList<Transaction> ledger = new ArrayList<>();
+
     static DateTimeFormatter dateOnly = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     static DateTimeFormatter timeOnly = DateTimeFormatter.ofPattern("HH:mm:ss");
 
     static String PROD = "src/main/resources/transactions.csv";
     static String TEST = "src/main/resources/test-transactions.csv";
     //endregion
+
     public static void main(String[] args) {
         loadTransactions();
         showHomeScreen();
@@ -24,45 +26,52 @@ public class AccountingLedgerApp {
 
     //region Displays
     public static void displayTransactions(ArrayList<Transaction> transactions, String transType) {
-        String rowFormatHeading = "| %-10s | %-8s | %-20s | %-20s | %-10s | %n";
-        String rowFormat = "| %-10s | %-8s | %-20s | %-20s | $%-9.2f | %n";
+        if (transactions.isEmpty()) {
+            System.out.println("no transactions found...");
 
-        String separator = "-".repeat(84);
-        String heading = " ".repeat(25);
-        String reportsHeading = "\nreport:" + " ".repeat(19);
+        } else {
+            String rowFormatHeading   = "| %-10s | %-8s | %-20s | %-20s | %-10s | %n";
+            String rowFormat          = "| %-10s | %-8s | %-20s | %-20s | $%-9.2f | %n";
 
-        String transHeader           = "==* T R A N S A C T I O N S *==";
-        String depositHeader         = "==* D E P O S I T S *==";
-        String paymentsHeader        = "==* P A Y M E N T S *==";
-        String reportMonthToDate     = "==* M O N T H * T O * D A T E *==";
-        String reportPreviousMonth   = "==* P R E V * M O N T H *==";
-        String reportYearToDate      = "==* Y E A R * T O * D A T E *==";
-        String reportPreviousYear    = "==* P R E V * Y E A R *==";
+            String separator        = "-".repeat(84);
+            String heading          = " ".repeat(25);
+            String reportsHeading   = "\nreport." + " ".repeat(19);
 
-        switch (transType) {
-            case "a" ->     System.out.println(heading + transHeader);
-            case "d" ->     System.out.println(heading + depositHeader);
-            case "p" ->     System.out.println(heading + paymentsHeader);
-            case "mtd" ->   System.out.println(reportsHeading + reportMonthToDate);
-            case "pm" ->    System.out.println(reportsHeading + reportPreviousMonth);
-            case "ytd" ->   System.out.println(reportsHeading + reportYearToDate);
-            case "py" ->    System.out.println(reportsHeading + reportPreviousYear);
-            default ->      System.out.println("Invalid operation");
+            String transHeader           = "==* T R A N S A C T I O N S *==";
+            String depositHeader         = "==* D E P O S I T S *==";
+            String paymentsHeader        = "==* P A Y M E N T S *==";
+            String reportMonthToDate     = "==* M O N T H * T O * D A T E *==";
+            String reportPreviousMonth   = "==* P R E V * M O N T H *==";
+            String reportYearToDate      = "==* Y E A R * T O * D A T E *==";
+            String reportPreviousYear    = "==* P R E V * Y E A R *==";
+
+            switch (transType) {
+                case "a" ->     System.out.println(heading + transHeader);
+                case "d" ->     System.out.println(heading + depositHeader);
+                case "p" ->     System.out.println(heading + paymentsHeader);
+                case "mtd" ->   System.out.println(reportsHeading + reportMonthToDate);
+                case "pm" ->    System.out.println(reportsHeading + reportPreviousMonth);
+                case "ytd" ->   System.out.println(reportsHeading + reportYearToDate);
+                case "py" ->    System.out.println(reportsHeading + reportPreviousYear);
+                case "vs" ->    System.out.println("vendor search.");
+
+                default ->      System.out.println("Invalid operation");
+            }
+
+            System.out.println(separator);
+            System.out.printf(rowFormatHeading, "Date", "Time", "Description", "Vendor", "Amount");
+            System.out.println(separator);
+
+            for (Transaction t : transactions) {
+                System.out.printf(rowFormat,
+                        t.getDateTime().format(dateOnly),
+                        t.getDateTime().format(timeOnly),
+                        t.getDescription(),
+                        t.getVendor(),
+                        t.getAmount());
+            }
+            System.out.println(separator);
         }
-
-        System.out.println(separator);
-        System.out.printf(rowFormatHeading, "Date", "Time", "Description", "Vendor", "Amount");
-        System.out.println(separator);
-
-        for (Transaction t : transactions) {
-            System.out.printf(rowFormat,
-                    t.getDateTime().format(dateOnly),
-                    t.getDateTime().format(timeOnly),
-                    t.getDescription(),
-                    t.getVendor(),
-                    t.getAmount());
-        }
-        System.out.println(separator);
     }
 
     public static void displayReceipt(ArrayList<Transaction> receipt) {
@@ -98,7 +107,6 @@ public class AccountingLedgerApp {
                 // TODO: HANDLE missing delimiter
                 String[] tokens = input.split("\\|");
 
-                // date|time|description|vendor|amount
                 String formatDateTime = String.format("%sT%s", tokens[0], tokens[1]);
                 LocalDateTime dateTime = LocalDateTime.parse(formatDateTime);
                 String description = tokens[2];
@@ -116,6 +124,7 @@ public class AccountingLedgerApp {
 
     public static ArrayList<Transaction> loadDeposits() {
         ArrayList<Transaction> deposits = new ArrayList<>();
+
         for (Transaction t : ledger) {
             if (t.isDeposit()) {
                 deposits.add(t);
@@ -126,6 +135,7 @@ public class AccountingLedgerApp {
 
     public static ArrayList<Transaction> loadPayments() {
         ArrayList<Transaction> payments = new ArrayList<>();
+
         for (Transaction t : ledger) {
             if (t.isPayment()) {
                 payments.add(t);
@@ -153,7 +163,6 @@ public class AccountingLedgerApp {
         } catch (NumberFormatException e) {
             System.out.println("ERROR: Input not <double>");
         }
-
         return amount;
     }
     //endregion
@@ -180,10 +189,11 @@ public class AccountingLedgerApp {
                 case "p" -> makePayment();
                 case "l" -> showLedgerScreen();
                 case "x" -> exit = true;
+
                 default -> System.out.println("Invalid Operation");
             }
         } while (!exit);
-        System.out.println("Thank you for using JDL services!");
+        System.out.println("Thank you for using our services.");
     }
 
     public static void showLedgerScreen() {
@@ -203,18 +213,17 @@ public class AccountingLedgerApp {
             String option = promptText();
 
             switch (option) {
-                // TODO: Change ledger to loadTransactions()?
                 case "a" -> displayTransactions(ledger, "a");
                 case "d" -> displayTransactions(loadDeposits(), "d");
                 case "p" -> displayTransactions(loadPayments(), "p");
                 case "r" -> showReportsScreen();
                 case "h" -> exit = true;
+
                 default -> System.out.println("Invalid Operation");
             }
         } while (!exit);
     }
 
-    // TODO: Report menu screen
     public static void showReportsScreen() {
         String menu = """
                 \t\t==* R E P O R T S *==
@@ -237,13 +246,16 @@ public class AccountingLedgerApp {
                 case "2" -> displayTransactions(previousMonth(), "pm");
                 case "3" -> displayTransactions(yearToDate(), "ytd");
                 case "4" -> displayTransactions(previousYear(), "py");
-                case "5" -> System.out.println("\t\tsearchByVendor()");
+                case "5" -> searchByVendor();
                 case "0" -> exit = true;
+
                 default -> System.out.println("Invalid Operation");
             }
         } while (!exit);
     }
+    //endregion
 
+    //region Reports
     public static ArrayList<Transaction> previousYear() {
         ArrayList<Transaction> report = new ArrayList<>();
         LocalDateTime currentDate = LocalDateTime.now();
@@ -297,7 +309,21 @@ public class AccountingLedgerApp {
         Collections.sort(report);
         return report;
     }
-    //***************************
+
+    public static void searchByVendor() {
+        System.out.println("\t\t==* V E N D O R * S E A R C H *==");
+        ArrayList<Transaction> report = new ArrayList<>();
+
+        System.out.print("\t\tSearch for vendor: ");
+        String input = promptText();
+
+        for (Transaction t: ledger) {
+            if (t.getVendor().equalsIgnoreCase(input)) {
+                report.add(t);
+            }
+        }
+        displayTransactions(report, "vs");
+    }
     //endregion
 
     //region Helpers
@@ -309,9 +335,11 @@ public class AccountingLedgerApp {
         do {
             System.out.print("\tEnter amount: $");
             double amount = promptAmount();
-            System.out.print("\tEnter description: ");
+
             // TODO: Do while for description to valid
+            System.out.print("\tEnter description: ");
             String description = scanner.nextLine().trim();
+
             System.out.print("\tEnter vendor: ");
             String vendor = scanner.nextLine().trim();
 
@@ -326,9 +354,7 @@ public class AccountingLedgerApp {
         } while (!done.equalsIgnoreCase("n"));
         System.out.print("\n");
 
-        if (!receipt.isEmpty()) {
-            saveTransaction(receipt);
-        }
+        if (!receipt.isEmpty()) saveTransaction(receipt);
     }
 
     public static void makePayment() {
@@ -341,9 +367,10 @@ public class AccountingLedgerApp {
         // TODO: Handle duplicates and only display last 4 digits
         int attempts = 3;
         boolean valid = false;
-
         String vendor = null;
+
         do {
+            // TODO: Fix bug
             if (attempts <= 1) {
                 System.out.println("\tretry later");
                 break;
