@@ -168,13 +168,55 @@ public class AccountingLedgerApp {
             switch (option) {
                 case "d" -> addDeposit();
                 // TODO: NOW2 makePayment
-                case "p" -> System.out.println("makePayment()");
+                case "p" -> makePayment();
                 case "l" -> showLedgerScreen();
                 case "x" -> exit = true;
                 default -> System.out.println("Invalid Operation");
             }
         } while (!exit);
         System.out.println("Thank you for using JDL services!");
+    }
+
+    public static void makePayment() {
+        System.out.println("\t==* M A K E * P A Y M E N T *==");
+        ArrayList<Transaction> receipt = new ArrayList<>();
+
+        System.out.print("\tPayment to?: ");
+        String description = promptText();
+
+        // TODO: Handle duplicates and only display last 4 digits
+        int attempts = 3;
+        boolean valid = false;
+
+        String vendor = null;
+        do {
+            if (attempts <= 1) {
+                System.out.println("\tretry later");
+                break;
+            }
+
+            System.out.print("\tEnter Debit card: ");
+            vendor = promptText();
+
+            if (vendor == null) {
+                System.out.printf("%n\tNo information added%n\t%d Attempts left...%n%n", attempts);
+                attempts --;
+            }else if (vendor.length() < 16) {
+                System.out.printf("%n\tPlease enter a valid card%n\t%d Attempts left...%n%n", attempts);
+                attempts --;
+            } else {
+                valid = true;
+            }
+
+        } while(!valid);
+
+        System.out.println("\tEnter amount: $");
+        double amount = promptAmount() * -1;
+        LocalDateTime now = LocalDateTime.now();
+
+        Transaction newTrans = new Transaction(now, description, vendor, amount);
+        recordTransaction(newTrans, receipt);
+        saveTransaction(receipt);
     }
 
     public static void showLedgerScreen() {
@@ -268,29 +310,23 @@ public class AccountingLedgerApp {
     }
 
     public static void saveTransaction(ArrayList<Transaction> receipt) {
-        String input;
-        System.out.print("Save to ledger? (y/n): ");
-        input = promptText();
+        try {
+            BufferedWriter bufWriter = new BufferedWriter(new FileWriter(TEST, true));
+            for (Transaction t : receipt) {
+                String date = (t.getDateTime()).format(dateOnly);
+                String time = (t.getDateTime()).format(timeOnly);
+                String record = String.format("%n%s|%s|%s|%s|%.2f",
+                        date,
+                        time,
+                        t.getDescription(),
+                        t.getVendor(),
+                        t.getAmount());
 
-        if (input.equalsIgnoreCase("y")) {
-            try {
-                BufferedWriter bufWriter = new BufferedWriter(new FileWriter(TEST, true));
-                for (Transaction t : receipt) {
-                    String date = (t.getDateTime()).format(dateOnly);
-                    String time = (t.getDateTime()).format(timeOnly);
-                    String record = String.format("%n%s|%s|%s|%s|%.2f",
-                            date,
-                            time,
-                            t.getDescription(),
-                            t.getVendor(),
-                            t.getAmount());
-
-                    bufWriter.write(record);
-                }
-                bufWriter.close();
-            } catch (IOException e) {
-                System.out.println("ERROR: Cannot write to file " + e.getMessage());
+                bufWriter.write(record);
             }
+            bufWriter.close();
+        } catch (IOException e) {
+            System.out.println("ERROR: Cannot write to file " + e.getMessage());
         }
     }
 

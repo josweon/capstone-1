@@ -2,7 +2,7 @@ package com.pluralsight;
 
 import java.time.LocalDateTime;
 
-public class Transaction {
+public class Transaction implements Comparable<Transaction> {
     private LocalDateTime dateTime;
     private String description;
     private String vendor;
@@ -34,11 +34,11 @@ public class Transaction {
     //endregion
 
     //region Checkers
-    public boolean isDeposit(){
+    public boolean isDeposit() {
         return this.amount > 0;
     }
 
-    public boolean isPayment(){
+    public boolean isPayment() {
         return this.amount < 0;
     }
     //endregion
@@ -53,5 +53,9 @@ public class Transaction {
                 ", amount=" + amount +
                 '}';
     }
-}
 
+    @Override
+    public int compareTo(Transaction o) {
+        return this.dateTime.compareTo(o.getDateTime());
+    }
+}

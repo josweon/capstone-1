@@ -1,0 +1,4 @@
+MVP
+-[] makePayment
+-[] work on Report functions
+-[x] handle chronological order issue
