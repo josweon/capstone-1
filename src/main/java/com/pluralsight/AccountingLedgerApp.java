@@ -44,9 +44,9 @@ public class AccountingLedgerApp {
             case "d" ->     System.out.println(heading + depositHeader);
             case "p" ->     System.out.println(heading + paymentsHeader);
             case "mtd" ->   System.out.println(reportsHeading + reportMonthToDate);
-            case "pm" ->    System.out.println(reportsHeading + reportPreviousYear);
-            case "ytd" ->   System.out.println(reportsHeading + reportPreviousMonth);
-            case "py" ->    System.out.println(reportsHeading + reportYearToDate);
+            case "pm" ->    System.out.println(reportsHeading + reportPreviousMonth);
+            case "ytd" ->   System.out.println(reportsHeading + reportYearToDate);
+            case "py" ->    System.out.println(reportsHeading + reportPreviousYear);
             default ->      System.out.println("Invalid operation");
         }
 
@@ -234,9 +234,9 @@ public class AccountingLedgerApp {
 
             switch (option) {
                 case "1" -> displayTransactions(monthToDate(), "mtd");
-//                case "2" -> displayReceipt(previousMonth(), "pm");
-                case "3" -> System.out.println("\t\tyearToDate()");
-                case "4" -> System.out.println("\t\tdisplayReports()");
+                case "2" -> displayTransactions(previousMonth(), "pm");
+                case "3" -> displayTransactions(yearToDate(), "ytd");
+                case "4" -> displayTransactions(previousYear(), "py");
                 case "5" -> System.out.println("\t\tsearchByVendor()");
                 case "0" -> exit = true;
                 default -> System.out.println("Invalid Operation");
@@ -244,7 +244,48 @@ public class AccountingLedgerApp {
         } while (!exit);
     }
 
-    public static ArrayList<Transaction> monthToDate (){
+    public static ArrayList<Transaction> previousYear() {
+        ArrayList<Transaction> report = new ArrayList<>();
+        LocalDateTime currentDate = LocalDateTime.now();
+        int prevYear = currentDate.getYear() - 1;
+
+        for (Transaction t: ledger){
+            if (t.getDateTime().getYear() == prevYear){
+                report.add(t);
+            }
+        }
+        Collections.sort(report);
+        return report;
+    }
+
+    public static ArrayList<Transaction> previousMonth() {
+        ArrayList<Transaction> report = new ArrayList<>();
+        LocalDateTime currentDate = LocalDateTime.now();
+        int prevMonth = currentDate.getMonthValue() - 1;
+
+        for (Transaction t: ledger){
+            if (t.getDateTime().getMonthValue() == prevMonth){
+                report.add(t);
+            }
+        }
+        Collections.sort(report);
+        return report;
+    }
+
+    public static ArrayList<Transaction> yearToDate() {
+        ArrayList<Transaction> report = new ArrayList<>();
+        LocalDateTime currentDate = LocalDateTime.now();
+
+        for (Transaction t: ledger){
+            if(t.getDateTime().getYear() == currentDate.getYear()) {
+                report.add(t);
+            }
+        }
+        Collections.sort(report);
+        return report;
+    }
+
+    public static ArrayList<Transaction> monthToDate() {
         ArrayList<Transaction> report = new ArrayList<>();
         LocalDateTime currentDate = LocalDateTime.now();
 
@@ -256,6 +297,7 @@ public class AccountingLedgerApp {
         Collections.sort(report);
         return report;
     }
+    //***************************
     //endregion
 
     //region Helpers
