@@ -177,48 +177,6 @@ public class AccountingLedgerApp {
         System.out.println("Thank you for using JDL services!");
     }
 
-    public static void makePayment() {
-        System.out.println("\t==* M A K E * P A Y M E N T *==");
-        ArrayList<Transaction> receipt = new ArrayList<>();
-
-        System.out.print("\tPayment to?: ");
-        String description = promptText();
-
-        // TODO: Handle duplicates and only display last 4 digits
-        int attempts = 3;
-        boolean valid = false;
-
-        String vendor = null;
-        do {
-            if (attempts <= 1) {
-                System.out.println("\tretry later");
-                break;
-            }
-
-            System.out.print("\tEnter Debit card: ");
-            vendor = promptText();
-
-            if (vendor == null) {
-                System.out.printf("%n\tNo information added%n\t%d Attempts left...%n%n", attempts);
-                attempts --;
-            }else if (vendor.length() < 16) {
-                System.out.printf("%n\tPlease enter a valid card%n\t%d Attempts left...%n%n", attempts);
-                attempts --;
-            } else {
-                valid = true;
-            }
-
-        } while(!valid);
-
-        System.out.println("\tEnter amount: $");
-        double amount = promptAmount() * -1;
-        LocalDateTime now = LocalDateTime.now();
-
-        Transaction newTrans = new Transaction(now, description, vendor, amount);
-        recordTransaction(newTrans, receipt);
-        saveTransaction(receipt);
-    }
-
     public static void showLedgerScreen() {
         String menu = """
                 \t==* L E D G E R *==
@@ -307,6 +265,48 @@ public class AccountingLedgerApp {
         if (!receipt.isEmpty()) {
             saveTransaction(receipt);
         }
+    }
+
+    public static void makePayment() {
+        System.out.println("\t==* M A K E * P A Y M E N T *==");
+        ArrayList<Transaction> receipt = new ArrayList<>();
+
+        System.out.print("\tPayment to?: ");
+        String description = promptText();
+
+        // TODO: Handle duplicates and only display last 4 digits
+        int attempts = 3;
+        boolean valid = false;
+
+        String vendor = null;
+        do {
+            if (attempts <= 1) {
+                System.out.println("\tretry later");
+                break;
+            }
+
+            System.out.print("\tEnter Debit card: ");
+            vendor = promptText();
+
+            if (vendor == null) {
+                System.out.printf("%n\tNo information added%n\t%d Attempts left...%n%n", attempts);
+                attempts --;
+            }else if (vendor.length() < 16) {
+                System.out.printf("%n\tPlease enter a valid card%n\t%d Attempts left...%n%n", attempts);
+                attempts --;
+            } else {
+                valid = true;
+            }
+
+        } while(!valid);
+
+        System.out.print("\tEnter amount: $");
+        double amount = promptAmount() * -1;
+        LocalDateTime now = LocalDateTime.now();
+
+        Transaction newTrans = new Transaction(now, description, vendor, amount);
+        recordTransaction(newTrans, receipt);
+        saveTransaction(receipt);
     }
 
     public static void saveTransaction(ArrayList<Transaction> receipt) {
