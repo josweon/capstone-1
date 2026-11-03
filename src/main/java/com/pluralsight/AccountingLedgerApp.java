@@ -29,6 +29,7 @@ public class AccountingLedgerApp {
 
         String separator = "-".repeat(84);
         String heading = " ".repeat(25);
+        String reportsHeading = "\nreport:" + " ".repeat(19);
 
         String transHeader           = "==* T R A N S A C T I O N S *==";
         String depositHeader         = "==* D E P O S I T S *==";
@@ -39,10 +40,14 @@ public class AccountingLedgerApp {
         String reportPreviousYear    = "==* P R E V * Y E A R *==";
 
         switch (transType) {
-            case "a" -> System.out.println(heading + transHeader);
-            case "d" -> System.out.println(heading + depositHeader);
-            case "p" -> System.out.println(heading + paymentsHeader);
-            default -> System.out.println("Invalid operation");
+            case "a" ->     System.out.println(heading + transHeader);
+            case "d" ->     System.out.println(heading + depositHeader);
+            case "p" ->     System.out.println(heading + paymentsHeader);
+            case "mtd" ->   System.out.println(reportsHeading + reportMonthToDate);
+            case "pm" ->    System.out.println(reportsHeading + reportPreviousYear);
+            case "ytd" ->   System.out.println(reportsHeading + reportPreviousMonth);
+            case "py" ->    System.out.println(reportsHeading + reportYearToDate);
+            default ->      System.out.println("Invalid operation");
         }
 
         System.out.println(separator);
@@ -228,8 +233,8 @@ public class AccountingLedgerApp {
             String option = promptText();
 
             switch (option) {
-                case "1" -> System.out.println("\t\tmonthToDate");
-                case "2" -> System.out.println("\t\tpreviousMonth");
+                case "1" -> displayTransactions(monthToDate(), "mtd");
+//                case "2" -> displayReceipt(previousMonth(), "pm");
                 case "3" -> System.out.println("\t\tyearToDate()");
                 case "4" -> System.out.println("\t\tdisplayReports()");
                 case "5" -> System.out.println("\t\tsearchByVendor()");
@@ -238,12 +243,17 @@ public class AccountingLedgerApp {
             }
         } while (!exit);
     }
+
     public static ArrayList<Transaction> monthToDate (){
         ArrayList<Transaction> report = new ArrayList<>();
         LocalDateTime currentDate = LocalDateTime.now();
 
         for (Transaction t: ledger){
+            if(t.getDateTime().getMonthValue() == currentDate.getMonthValue()){
+                report.add(t);
+            }
         }
+        Collections.sort(report);
         return report;
     }
     //endregion
