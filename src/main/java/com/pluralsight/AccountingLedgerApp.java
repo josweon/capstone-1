@@ -1,8 +1,6 @@
 package com.pluralsight;
 
 import java.io.*;
-import java.sql.Array;
-import java.sql.SQLOutput;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -19,7 +17,7 @@ public class AccountingLedgerApp {
     static String TEST = "src/main/resources/test-transactions.csv";
 
     public static void main(String[] args) {
-       loadTransactions();
+        loadTransactions();
         showHomeScreen();
     }
 
@@ -46,8 +44,8 @@ public class AccountingLedgerApp {
         System.out.printf(rowFormatHeading, "Date", "Time", "Description", "Vendor", "Amount");
         System.out.println(separator);
 
-        for (Transaction t: transactions) {
-            System.out.printf( rowFormat,
+        for (Transaction t : transactions) {
+            System.out.printf(rowFormat,
                     t.getDateTime().format(dateOnly),
                     t.getDateTime().format(timeOnly),
                     t.getDescription(),
@@ -67,7 +65,7 @@ public class AccountingLedgerApp {
             bufReader.readLine();
 
             String input;
-            while((input = bufReader.readLine()) != null){
+            while ((input = bufReader.readLine()) != null) {
                 // TODO: HANDLE missing delimiter
                 String[] tokens = input.split("\\|");
 
@@ -89,7 +87,7 @@ public class AccountingLedgerApp {
 
     public static ArrayList<Transaction> loadDeposits() {
         ArrayList<Transaction> deposits = new ArrayList<>();
-        for (Transaction t: ledger) {
+        for (Transaction t : ledger) {
             if (t.isDeposit()) {
                 deposits.add(t);
             }
@@ -99,7 +97,7 @@ public class AccountingLedgerApp {
 
     public static ArrayList<Transaction> loadPayments() {
         ArrayList<Transaction> payments = new ArrayList<>();
-        for (Transaction t: ledger) {
+        for (Transaction t : ledger) {
             if (t.isPayment()) {
                 payments.add(t);
             }
@@ -116,7 +114,7 @@ public class AccountingLedgerApp {
     }
 
     public static double promptAmount() {
-        String text = null;
+        String text;
         double amount = 0;
 
         try {
@@ -147,7 +145,6 @@ public class AccountingLedgerApp {
             System.out.print(menu);
             String option = promptText();
 
-            // TODO: NOW3 recordTransactions, saveTransactions
             switch (option) {
                 case "d" -> addDeposit();
                 // TODO: NOW2 makePayment
@@ -160,13 +157,11 @@ public class AccountingLedgerApp {
         System.out.println("Thank you for using JDL services!");
     }
 
-    // TODO: NOW1 addDeposit
-    public static void addDeposit () {
-        //*prompt the user for the deposit information and save it to the CSV file
+    public static void addDeposit() {
         System.out.println("\t==* A D D * D E P O S I T *==");
         ArrayList<Transaction> receipt = new ArrayList<>();
 
-        String done = null;
+        String done;
         do {
             System.out.print("\tEnter amount: $");
             double amount = promptAmount();
@@ -179,48 +174,49 @@ public class AccountingLedgerApp {
             LocalDateTime now = LocalDateTime.now();
 
             Transaction newTrans = new Transaction(now, description, vendor, amount);
-
-            // recordTransaction
             recordTransaction(newTrans, receipt);
+
             System.out.print("Would you like to add another? (y/n): ");
             done = promptText();
 
         } while (!done.equalsIgnoreCase("n"));
         System.out.print("\n");
+
+        if (!receipt.isEmpty()) {
+            saveTransaction(receipt);
+        }
     }
 
-//    public static void saveTransaction (ArrayList<Transaction> receipt) {
-//        // TODO: saveTransaction()
-//        if (!receipt.isEmpty()) {
-//            string input = null;
-//            do {
-//                System.out.print("Would like to record the transaction? (y/n): ");
-//                input = promptText();
-//
-//                try {
-//                    BufferedWriter bufWriter = new BufferedWriter(new FileWriter(TEST, true));
-//                    for (Transaction t : receipt) {
-//                        String date = (t.getDateTime()).format(dateOnly);
-//                        String time = (t.getDateTime()).format(timeOnly);
-//                        String record = String.format("%s|%s|%s|%s|%.2f",
-//                                date,
-//                                time,
-//                                t.getDescription(),
-//                                t.getVendor(),
-//                                t.getAmount());
-//
-//                        bufWriter.write(record);
-//                    }
-//
-//                } catch (IOException e) {
-//                    System.out.println("ERROR: Cannot write to file " + e.getMessage());
-//                }
-//            } while(input.equals)
-//        }
-//    }
+    public static void saveTransaction(ArrayList<Transaction> receipt) {
+        String input;
+        System.out.print("Save to ledger? (y/n): ");
+        input = promptText();
+
+        if (input.equalsIgnoreCase("y")) {
+            try {
+                BufferedWriter bufWriter = new BufferedWriter(new FileWriter(TEST, true));
+                for (Transaction t : receipt) {
+                    String date = (t.getDateTime()).format(dateOnly);
+                    String time = (t.getDateTime()).format(timeOnly);
+                    String record = String.format("%n%s|%s|%s|%s|%.2f",
+                            date,
+                            time,
+                            t.getDescription(),
+                            t.getVendor(),
+                            t.getAmount());
+
+                    bufWriter.write(record);
+                }
+                bufWriter.close();
+            } catch (IOException e) {
+                System.out.println("ERROR: Cannot write to file " + e.getMessage());
+            }
+        }
+    }
+
 
     public static void recordTransaction(Transaction t, ArrayList<Transaction> receipt) {
-        ledger.add(t);
+//        ledger.add(t);
         receipt.add(t);
         System.out.println("\nsuccess!");
         printReceipt(receipt);
@@ -236,8 +232,8 @@ public class AccountingLedgerApp {
         System.out.printf(rowFormatHeading, "Date", "Time", "Description", "Vendor", "Amount");
         System.out.println(separator);
 
-        for (Transaction t: receipt) {
-            System.out.printf( rowFormat,
+        for (Transaction t : receipt) {
+            System.out.printf(rowFormat,
                     t.getDateTime().format(dateOnly),
                     t.getDateTime().format(timeOnly),
                     t.getDescription(),
@@ -271,7 +267,7 @@ public class AccountingLedgerApp {
                 case "h" -> exit = true;
                 default -> System.out.println("Invalid Operation");
             }
-        } while(!exit);
+        } while (!exit);
     }
 
     // TODO: Report menu screen
@@ -301,7 +297,7 @@ public class AccountingLedgerApp {
                 case "0" -> exit = true;
                 default -> System.out.println("Invalid Operation");
             }
-        } while(!exit);
+        } while (!exit);
     }
     //endregion
 }
