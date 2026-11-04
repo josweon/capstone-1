@@ -370,9 +370,6 @@ public class AccountingLedgerApp {
         String vendor = null;
 
         do {
-            if (attempts <= 0){
-                break;
-            }
             System.out.print("\tEnter Debit card: ");
             vendor = promptText();
 
@@ -397,6 +394,7 @@ public class AccountingLedgerApp {
 
             Transaction newTrans = new Transaction(now, description, vendor, amount);
             recordTransaction(newTrans, receipt);
+            System.out.print("\n");
             saveTransaction(receipt);
         }
     }
