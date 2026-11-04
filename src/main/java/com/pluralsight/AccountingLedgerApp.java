@@ -33,13 +33,13 @@ public class AccountingLedgerApp {
             System.out.println("no transactions found...");
 
         } else {
-            String rowFormatHeading = "| %-10s | %-8s | %-20s | %-20s | %-10s | %n";
-            String rowFormat = "| %-10s | %-8s | %-20s | %-20s | $%-9.2f | %n";
+            String rowFormatHeading = "| %-10s | %-8s | %-30s | %-20s | %-10s | %n";
+            String rowFormat = "| %-10s | %-8s | %-30s | %-20s | $%-9.2f | %n";
 
-            String separator = "-".repeat(84);
-            String heading = " ".repeat(25);
+            String separator = "-".repeat(94);
+            String heading = " ".repeat(35);
             String reportsHeading = "\nreport." + " ".repeat(19);
-            String searchHeading = "\nfilter applied." + " ".repeat(10);
+            String searchHeading = "\nfilter applied." + " ".repeat(20);
 
             String transHeader = "==* T R A N S A C T I O N S *==";
             String depositHeader = "==* D E P O S I T S *==";
@@ -58,7 +58,7 @@ public class AccountingLedgerApp {
                 case "pm" -> System.out.println(reportsHeading + reportPreviousMonth);
                 case "ytd" -> System.out.println(reportsHeading + reportYearToDate);
                 case "py" -> System.out.println(reportsHeading + reportPreviousYear);
-                case "vs" -> System.out.println("vendor search.");
+                case "vs" -> System.out.println("\nvendor search.");
                 case "cs" -> System.out.println(searchHeading + customHeader);
 
                 default -> System.out.println("Invalid operation");
@@ -367,7 +367,7 @@ public class AccountingLedgerApp {
             }
         }
         if (filterTrans.isEmpty()){
-            System.out.println("\t\t\tno matches.");
+            System.out.println("\n\t\t\tno matches.");
         } else {
             displayTransactions(filterTrans, "cs");
         }
