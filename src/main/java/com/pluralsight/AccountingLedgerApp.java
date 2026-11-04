@@ -3,6 +3,7 @@ package com.pluralsight;
 import java.io.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Scanner;
@@ -99,21 +100,29 @@ public class AccountingLedgerApp {
     public static void loadTransactions() {
         try {
             BufferedReader bufReader = new BufferedReader(new FileReader(TEST));
-            // TODO: HANDLE first line safely
             bufReader.readLine();
 
             String input;
             while ((input = bufReader.readLine()) != null) {
-                // TODO: HANDLE missing delimiter
                 String[] tokens = input.split("\\|");
+                if (tokens.length < 5) {
+                    System.out.println("Skipping malformed lines: " + input);
+                    continue;
+                }
+                try {
+                    String formatDateTime = String.format("%sT%s", tokens[0], tokens[1]);
+                    LocalDateTime dateTime = LocalDateTime.parse(formatDateTime);
+                    String description = tokens[2];
+                    String vendor = tokens[3];
+                    double amount = Double.parseDouble(tokens[4]);
 
-                String formatDateTime = String.format("%sT%s", tokens[0], tokens[1]);
-                LocalDateTime dateTime = LocalDateTime.parse(formatDateTime);
-                String description = tokens[2];
-                String vendor = tokens[3];
-                double amount = Double.parseDouble(tokens[4]);
+                    ledger.add(new Transaction(dateTime, description, vendor, amount));
 
-                ledger.add(new Transaction(dateTime, description, vendor, amount));
+                } catch (NumberFormatException e) {
+                    System.out.println("Skipping line with invalid amount: " + input);
+                } catch (DateTimeParseException e) {
+                    System.out.println("Skipping line with invalid datetime: " + input);
+                }
             }
             bufReader.close();
 
@@ -333,20 +342,30 @@ public class AccountingLedgerApp {
 
         String done;
         do {
-            System.out.print("\tEnter amount: $");
-            double amount = promptAmount();
+            double amount = 0;
+            String description = null;
+            String vendor = null;
 
-            // TODO: Do while for description to valid
-            System.out.print("\tEnter description: ");
-            String description = scanner.nextLine().trim();
+            try {
+                System.out.print("\tEnter amount: $");
+                amount = promptAmount();
 
-            System.out.print("\tEnter vendor: ");
-            String vendor = scanner.nextLine().trim();
+                System.out.print("\tEnter description: ");
+                description = scanner.nextLine().trim();
 
+                System.out.print("\tEnter vendor: ");
+                vendor = scanner.nextLine().trim();
+            } catch (NullPointerException e) {
+                System.out.println("\tfields cannot be empty.");
+            }
             LocalDateTime now = LocalDateTime.now();
 
             Transaction newTrans = new Transaction(now, description, vendor, amount);
-            recordTransaction(newTrans, receipt);
+            if (newTrans.getAmount() == 0) {
+                return;
+            } else {
+                recordTransaction(newTrans, receipt);
+            }
 
             System.out.print("Would you like to add another? (y/n): ");
             done = promptText();

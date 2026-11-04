@@ -1,7 +1,18 @@
 Operation Bulletproof
 -[x] Fix card bug
 -[] Secure entry points
-    -[] Reader
+    -[] Transaction file:
+        -[x]Unsorted
+        -[x]Rows with missing columns
     -[] Writer, prompts
-    -[] Parser
+        -[] retry for ALL number prompts
+
 -[] Account for duplicate entries
+
+Dave's Feedback:
+
+For example, what if I enter "eleven" for a transaction amount, does your code crash or robustly
+re-prompt me for a number?  Another good example would be: does your code handle a transaction
+file that is imperfect because it's unsorted, or has some rows that are missing a column?
+
+I know, handling crappy input is boring, but it's what professional developers get paid to do.
