@@ -1,4 +1,7 @@
-MVP
--[x] makePayment
--[x] handle chronological order issue
--[] work on Report functions
+Operation Bulletproof
+-[x] Fix card bug
+-[] Secure entry points
+    -[] Reader
+    -[] Writer, prompts
+    -[] Parser
+-[] Account for duplicate entries

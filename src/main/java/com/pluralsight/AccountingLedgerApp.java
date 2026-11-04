@@ -370,16 +370,13 @@ public class AccountingLedgerApp {
         String vendor = null;
 
         do {
-            // TODO: Fix bug
-            if (attempts <= 1) {
-                System.out.println("\tretry later");
+            if (attempts <= 0){
                 break;
             }
-
             System.out.print("\tEnter Debit card: ");
             vendor = promptText();
 
-            if (vendor == null) {
+            if (vendor.isEmpty()) {
                 System.out.printf("%n\tNo information added%n\t%d Attempts left...%n%n", attempts);
                 attempts --;
             }else if (vendor.length() < 16) {
@@ -389,15 +386,19 @@ public class AccountingLedgerApp {
                 valid = true;
             }
 
-        } while(!valid);
+        } while(!valid && attempts > 0);
 
-        System.out.print("\tEnter amount: $");
-        double amount = promptAmount() * -1;
-        LocalDateTime now = LocalDateTime.now();
+        if (!valid) {
+            System.out.println("\tretry later...");
+        } else {
+            System.out.print("\tEnter amount: $");
+            double amount = promptAmount() * -1;
+            LocalDateTime now = LocalDateTime.now();
 
-        Transaction newTrans = new Transaction(now, description, vendor, amount);
-        recordTransaction(newTrans, receipt);
-        saveTransaction(receipt);
+            Transaction newTrans = new Transaction(now, description, vendor, amount);
+            recordTransaction(newTrans, receipt);
+            saveTransaction(receipt);
+        }
     }
 
     public static void saveTransaction(ArrayList<Transaction> receipt) {
