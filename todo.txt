@@ -12,6 +12,7 @@ BONUS
 -----
 ###OPTIMIZATIONS
 -[] Make error handlers consistent
+-[] Add stars to debit when printing
 
 Operation Bulletproof
 -[x] Fix card bug

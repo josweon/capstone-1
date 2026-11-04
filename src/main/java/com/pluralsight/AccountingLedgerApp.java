@@ -1,12 +1,13 @@
 package com.pluralsight;
 
 import java.io.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Locale;
 import java.util.Scanner;
 
 public class AccountingLedgerApp {
@@ -17,7 +18,7 @@ public class AccountingLedgerApp {
     static DateTimeFormatter dateOnly = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     static DateTimeFormatter timeOnly = DateTimeFormatter.ofPattern("HH:mm:ss");
 
-    static String PROD = "src/main/resources/transactions.csv";
+//    static String PROD = "src/main/resources/transactions.csv";
     static String TEST = "src/main/resources/test-transactions.csv";
     //endregion
 
@@ -275,8 +276,8 @@ public class AccountingLedgerApp {
 
             LocalDateTime startDate = null;
             LocalDateTime endDate = null;
-            String description = null;
-            String vendor = null;
+            String description;
+            String vendor;
             Double amount = null;
 
             // TODO: Fix dateTime input
@@ -284,7 +285,7 @@ public class AccountingLedgerApp {
             String startDateInput = promptText();
             if (!startDateInput.isEmpty()) {
                 try {
-                    startDate = LocalDateTime.parse(startDateInput);
+                    startDate = LocalDate.parse(startDateInput, dateOnly).atStartOfDay();
                 } catch (DateTimeParseException e) {
                     System.out.println("\t\t\tERROR: Input is not a DateTime");
                 }
@@ -294,7 +295,7 @@ public class AccountingLedgerApp {
             String endDateInput = promptText();
             if (!endDateInput.isEmpty()) {
                 try {
-                    endDate = LocalDateTime.parse(endDateInput);
+                    endDate = LocalDate.parse(endDateInput, dateOnly).atTime(LocalTime.MAX);
                 } catch (DateTimeParseException e) {
                     System.out.println("\t\t\tERROR: Input is not a DateTime");
                 }
@@ -315,54 +316,63 @@ public class AccountingLedgerApp {
                     System.out.println("\t\t\tERROR: Input is not Double");
             }
 
-            ArrayList<Transaction> filterTrans = new ArrayList<>();
+            filterSearch(startDate, endDate, description, vendor, amount);
+        }
 
-            for (Transaction t: ledger) {
-                boolean isMatch = true;
+    private static void filterSearch(LocalDateTime startDate,
+                                     LocalDateTime endDate,
+                                     String description,
+                                     String vendor,
+                                     Double amount) {
 
-                if (startDate != null) {
-                    if (t.getDateTime().isBefore(startDate)) {
-                        isMatch = false;
-                    }
-                }
+        ArrayList<Transaction> filterTrans = new ArrayList<>();
 
-                if (isMatch && endDate != null) {
-                    if (t.getDateTime().isAfter(endDate)) {
-                        isMatch = false;
-                    }
-                }
+        for (Transaction t: ledger) {
+            boolean isMatch = true;
 
-                if (isMatch && description != null && !description.isEmpty()) {
-                    String transDescription = t.getDescription().toLowerCase();
-                    if (!transDescription.contains(description.toLowerCase())) {
-                        isMatch = false;
-                    }
-                }
-
-                if (isMatch && vendor != null && !vendor.isEmpty()) {
-                    String transVendor = t.getVendor().toLowerCase();
-                    if (!transVendor.contains(vendor.toLowerCase())){
-                        isMatch = false;
-                    }
-                }
-
-                if (isMatch && amount != null) {
-                    if (t.getAmount() != amount) {
-                        isMatch = false;
-                    }
-                }
-
-                if (isMatch) {
-                    filterTrans.add(t);
+            if (startDate != null) {
+                if (t.getDateTime().isBefore(startDate)) {
+                    isMatch = false;
                 }
             }
-            if (filterTrans.isEmpty()){
-                System.out.println("\t\t\tno matches.");
-            } else {
-                displayTransactions(filterTrans, "cs");
+
+            if (isMatch && endDate != null) {
+                if (t.getDateTime().isAfter(endDate)) {
+                    isMatch = false;
+                }
+            }
+
+            if (isMatch && description != null && !description.isEmpty()) {
+                String transDescription = t.getDescription().toLowerCase();
+                if (!transDescription.contains(description.toLowerCase())) {
+                    isMatch = false;
+                }
+            }
+
+            if (isMatch && vendor != null && !vendor.isEmpty()) {
+                String transVendor = t.getVendor().toLowerCase();
+                if (!transVendor.contains(vendor.toLowerCase())){
+                    isMatch = false;
+                }
+            }
+
+            if (isMatch && amount != null) {
+                if (t.getAmount() != amount) {
+                    isMatch = false;
+                }
+            }
+
+            if (isMatch) {
+                filterTrans.add(t);
             }
         }
-//*********************************************************
+        if (filterTrans.isEmpty()){
+            System.out.println("\t\t\tno matches.");
+        } else {
+            displayTransactions(filterTrans, "cs");
+        }
+    }
+
         //region Reports
         public static ArrayList<Transaction> previousYear () {
             ArrayList<Transaction> report = new ArrayList<>();
@@ -485,10 +495,9 @@ public class AccountingLedgerApp {
             System.out.print("\tPayment to?: ");
             String description = promptText();
 
-            // TODO: Handle duplicates and only display last 4 digits
             int attempts = 3;
             boolean valid = false;
-            String vendor = null;
+            String vendor;
 
             do {
                 System.out.print("\tEnter Debit card: ");
