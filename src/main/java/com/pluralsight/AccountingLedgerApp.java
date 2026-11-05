@@ -11,7 +11,7 @@ import java.util.Collections;
 import java.util.Scanner;
 
 public class AccountingLedgerApp {
-    //region Initializers
+    //region Fields & Config
     static Scanner scanner = new Scanner(System.in);
     static ArrayList<Transaction> ledger = new ArrayList<>();
 
@@ -22,6 +22,7 @@ public class AccountingLedgerApp {
 
     //csv for testing
     //static String TEST = "src/main/resources/test-transactions.csv";
+
     //endregion
 
     public static void main(String[] args) {
@@ -30,8 +31,167 @@ public class AccountingLedgerApp {
         showHomeScreen();
     }
 
-    //region Displays
+    //region Home Screen (D, P, L, X)
+    public static void showHomeScreen() {
+        Collections.sort(ledger);
+        String menu = """
+                ==* H O M E S C R E E N *=
+                D) Add Deposit
+                P) Make Payment (Debit)
+                L) Ledger
+                X) Exit
+                
+                Enter option:\s""";
 
+        boolean exit = false;
+        do {
+            System.out.print(menu);
+            String option = promptText().toLowerCase();
+
+            switch (option) {
+                case "d" -> addDeposit();
+                case "p" -> makePayment();
+                case "l" -> showLedgerScreen();
+                case "x" -> exit = true;
+
+                default -> System.out.println("Invalid Operation");
+            }
+        } while (!exit);
+        System.out.println("\n=* Thank you for using JDL Accounting Services *=");
+    }
+
+    public static void addDeposit() {
+        System.out.println("\t==* A D D * D E P O S I T *==");
+
+        double amount = 0;
+        String description;
+        String vendor;
+
+        while (amount == 0) {
+            System.out.print("\tEnter amount: $");
+            amount = promptAmount();
+        }
+
+        boolean isEmpty;
+        do {
+            System.out.print("\tEnter description: ");
+            description = scanner.nextLine().trim();
+
+            System.out.print("\tEnter vendor: ");
+            vendor = scanner.nextLine().trim();
+
+            isEmpty = description.isEmpty() || vendor.isEmpty();
+
+            if (isEmpty) {
+                System.out.println("\tfields cannot be empty.\n");
+            }
+
+        } while (isEmpty);
+
+        LocalDateTime now = LocalDateTime.now();
+
+        Transaction newTrans = new Transaction(now, description, vendor, amount);
+
+        recordTransaction(newTrans);
+        saveTransaction(newTrans);
+    }
+
+    public static void makePayment() {
+        System.out.println("\t==* M A K E * P A Y M E N T *==");
+
+        double amount = 0;
+        String description;
+        String vendor;
+
+        do {
+            System.out.print("\tEnter description: ");
+            description = scanner.nextLine().trim();
+
+            System.out.print("\tEnter vendor: ");
+            vendor = scanner.nextLine().trim();
+
+            if (description.isEmpty() || vendor.isEmpty()){
+                System.out.println("\tfields cannot be empty.\n");
+            }
+        } while (description.isEmpty() || vendor.isEmpty());
+
+        while (amount == 0) {
+            System.out.print("\tEnter amount: $");
+            amount = promptAmount();
+        }
+        LocalDateTime now = LocalDateTime.now();
+
+        Transaction newTrans = new Transaction(now, description, vendor, amount * -1);
+
+        recordTransaction(newTrans);
+        saveTransaction(newTrans);
+    }
+
+    //endregion
+
+    //region Ledger Screen (A, D, P, R, H)
+    public static void showLedgerScreen() {
+        Collections.sort(ledger);
+        String menu = """
+                \t==* L E D G E R *==
+                \tA) All
+                \tD) Deposits
+                \tP) Payments
+                \tR) Reports
+                \tH) <-Homescreen
+                
+                \tEnter option:\s""";
+
+        boolean exit = false;
+        do {
+            System.out.print(menu);
+            String option = promptText().toLowerCase();
+
+            switch (option) {
+                case "a" -> displayTransactions(ledger, "a");
+                case "d" -> displayTransactions(getDeposits(), "d");
+                case "p" -> displayTransactions(getPayments(), "p");
+                case "r" -> showReportsScreen();
+                case "h" -> exit = true;
+
+                default -> System.out.println("Invalid Operation");
+            }
+        } while (!exit);
+    }
+
+    /**
+     * Loads transactions that are deposits *(on transaction.Amount(POSITIVE))
+     * eg: $500.00
+     * @return sorted ArrayList containing ONLY deposit transactions
+     */
+    public static ArrayList<Transaction> getDeposits() {
+        ArrayList<Transaction> deposits = new ArrayList<>();
+
+        for (Transaction t : ledger) {
+            if (t.isDeposit()) {
+                deposits.add(t);
+            }
+        }
+        return deposits;
+    }
+    //endregion
+    
+    /**
+     * Loads transactions that are payments *(on transaction.Amount(NEGATIVE))
+     * eg: $-500.00
+     * @return sorted ArrayList containing ONLY payments transactions
+     */
+    public static ArrayList<Transaction> getPayments() {
+        ArrayList<Transaction> payments = new ArrayList<>();
+
+        for (Transaction t : ledger) {
+            if (t.isPayment()) {
+                payments.add(t);
+            }
+        }
+        return payments;
+    }
+    
     /**
      * Generates tables that show transactions with appropriate headings and clean formatting
      *
@@ -156,37 +316,6 @@ public class AccountingLedgerApp {
         }
     }
 
-    /**
-     * Loads transactions that are deposits *(on transaction.Amount(POSITIVE))
-     * eg: $500.00
-     * @return sorted ArrayList containing ONLY deposit transactions
-     */
-    public static ArrayList<Transaction> loadDeposits() {
-        ArrayList<Transaction> deposits = new ArrayList<>();
-
-        for (Transaction t : ledger) {
-            if (t.isDeposit()) {
-                deposits.add(t);
-            }
-        }
-        return deposits;
-    }
-
-    /**
-     * Loads transactions that are payments *(on transaction.Amount(NEGATIVE))
-     * eg: $-500.00
-     * @return sorted ArrayList containing ONLY payments transactions
-     */
-    public static ArrayList<Transaction> loadPayments() {
-        ArrayList<Transaction> payments = new ArrayList<>();
-
-        for (Transaction t : ledger) {
-            if (t.isPayment()) {
-                payments.add(t);
-            }
-        }
-        return payments;
-    }
     //endregion
 
     //region Prompters
@@ -224,62 +353,7 @@ public class AccountingLedgerApp {
     //endregion
 
     //region Menus
-    public static void showHomeScreen() {
-        Collections.sort(ledger);
-        String menu = """
-                ==* H O M E S C R E E N *=
-                D) Add Deposit
-                P) Make Payment (Debit)
-                L) Ledger
-                X) Exit
-                
-                Enter option:\s""";
 
-        boolean exit = false;
-        do {
-            System.out.print(menu);
-            String option = promptText().toLowerCase();
-
-            switch (option) {
-                case "d" -> addDeposit();
-                case "p" -> makePayment();
-                case "l" -> showLedgerScreen();
-                case "x" -> exit = true;
-
-                default -> System.out.println("Invalid Operation");
-            }
-        } while (!exit);
-        System.out.println("\n=* Thank you for using JDL Accounting Services *=");
-    }
-
-    public static void showLedgerScreen() {
-        Collections.sort(ledger);
-        String menu = """
-                \t==* L E D G E R *==
-                \tA) All
-                \tD) Deposits
-                \tP) Payments
-                \tR) Reports
-                \tH) <-Homescreen
-                
-                \tEnter option:\s""";
-
-        boolean exit = false;
-        do {
-            System.out.print(menu);
-            String option = promptText().toLowerCase();
-
-            switch (option) {
-                case "a" -> displayTransactions(ledger, "a");
-                case "d" -> displayTransactions(loadDeposits(), "d");
-                case "p" -> displayTransactions(loadPayments(), "p");
-                case "r" -> showReportsScreen();
-                case "h" -> exit = true;
-
-                default -> System.out.println("Invalid Operation");
-            }
-        } while (!exit);
-    }
 
     public static void showReportsScreen() {
         String menu = """
@@ -496,72 +570,7 @@ public class AccountingLedgerApp {
     //endregion
 
     //region Helpers
-    public static void addDeposit() {
-        System.out.println("\t==* A D D * D E P O S I T *==");
 
-        double amount = 0;
-        String description;
-        String vendor;
-
-        while (amount == 0) {
-            System.out.print("\tEnter amount: $");
-            amount = promptAmount();
-        }
-
-        boolean isEmpty;
-        do {
-            System.out.print("\tEnter description: ");
-            description = scanner.nextLine().trim();
-
-            System.out.print("\tEnter vendor: ");
-            vendor = scanner.nextLine().trim();
-
-            isEmpty = description.isEmpty() || vendor.isEmpty();
-
-            if (isEmpty) {
-                System.out.println("\tfields cannot be empty.\n");
-            }
-
-        } while (isEmpty);
-
-        LocalDateTime now = LocalDateTime.now();
-
-        Transaction newTrans = new Transaction(now, description, vendor, amount);
-
-        recordTransaction(newTrans);
-        saveTransaction(newTrans);
-    }
-
-    public static void makePayment() {
-        System.out.println("\t==* M A K E * P A Y M E N T *==");
-
-        double amount = 0;
-        String description;
-        String vendor;
-
-        do {
-            System.out.print("\tEnter description: ");
-            description = scanner.nextLine().trim();
-
-            System.out.print("\tEnter vendor: ");
-            vendor = scanner.nextLine().trim();
-
-            if (description.isEmpty() || vendor.isEmpty()){
-                System.out.println("\tfields cannot be empty.\n");
-            }
-        } while (description.isEmpty() || vendor.isEmpty());
-
-        while (amount == 0) {
-            System.out.print("\tEnter amount: $");
-            amount = promptAmount();
-        }
-        LocalDateTime now = LocalDateTime.now();
-
-        Transaction newTrans = new Transaction(now, description, vendor, amount * -1);
-
-        recordTransaction(newTrans);
-        saveTransaction(newTrans);
-    }
 
     public static void saveTransaction(Transaction t) {
         try {

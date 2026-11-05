@@ -1,7 +1,8 @@
 ## Home Stretch
 -[x] Get Screenshot with lanterna tui for future improvements
--[] Organize codebase / add docstring
+-[] Organize codebase for grading
 -[] Start README.md (https://github.com/id3283/capstone-advice)
+-[] add docstring
 
 ## POSSIBLE IMPROVEMENTS
 -[] Change the date format to (Thursday, May 10th)
