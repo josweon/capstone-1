@@ -105,15 +105,15 @@ public class AccountingLedgerApp {
                     ledger.add(new Transaction(dateTime, description, vendor, amount));
 
                 } catch (NumberFormatException e) {
-                    System.out.println("Skipping line with invalid amount: " + input);
+                    System.out.println("Invalid amount, skipping line " + input);
                 } catch (DateTimeParseException e) {
-                    System.out.println("Skipping line with invalid datetime: " + input);
+                    System.out.println("Invalid datetime, skipping line " + input);
                 }
             }
             bufReader.close();
 
         } catch (IOException e) {
-            System.out.println("ERROR: Cannot read file" + e.getMessage());
+            System.out.println("Invalid IO stream, " + e.getMessage());
         }
     }
 
@@ -154,12 +154,12 @@ public class AccountingLedgerApp {
             text = scanner.nextLine().trim();
             amount = Double.parseDouble(text);
             if (amount < 0) {
-                System.out.print("\t<positive only>\n");
+                System.out.print("\tInvalid input, positive <double> only\n");
                 amount = 0;
             }
 
         } catch (NumberFormatException e) {
-            System.out.println("\tERROR: Input not <double>");
+            System.out.println("\tInvalid input, not <double>");
         }
         return amount;
     }
@@ -209,7 +209,7 @@ public class AccountingLedgerApp {
         boolean exit = false;
         do {
             System.out.print(menu);
-            String option = promptText();
+            String option = promptText().toLowerCase();
 
             switch (option) {
                 case "a" -> displayTransactions(ledger, "a");
@@ -272,7 +272,7 @@ public class AccountingLedgerApp {
             try {
                 startDate = LocalDate.parse(startDateInput, dateOnly).atStartOfDay();
             } catch (DateTimeParseException e) {
-                System.out.println("\t\t\tERROR: Input is not a DateTime");
+                System.out.println("\t\t\tInvalid date, skipping filter");
             }
         }
 
@@ -282,7 +282,7 @@ public class AccountingLedgerApp {
             try {
                 endDate = LocalDate.parse(endDateInput, dateOnly).atTime(LocalTime.MAX);
             } catch (DateTimeParseException e) {
-                System.out.println("\t\t\tERROR: Input is not a DateTime");
+                System.out.println("\t\t\tInvalid date, skipping filter");
             }
         }
 
@@ -424,12 +424,16 @@ public class AccountingLedgerApp {
         System.out.print("\t\tSearch for vendor: ");
         String input = promptText();
 
-        for (Transaction t : ledger) {
-            if (t.getVendor().toLowerCase().contains(input.toLowerCase())) {
-                report.add(t);
+        if (input.isEmpty()){
+            System.out.println("\t\tno vendors...\n");
+        } else {
+            for (Transaction t : ledger) {
+                if (t.getVendor().toLowerCase().contains(input.toLowerCase())) {
+                    report.add(t);
+                }
             }
+            displayTransactions(report, "vs");
         }
-        displayTransactions(report, "vs");
     }
     //endregion
 
@@ -519,7 +523,7 @@ public class AccountingLedgerApp {
 
             bufWriter.close();
         } catch (IOException e) {
-            System.out.println("ERROR: Cannot write to file " + e.getMessage());
+            System.out.println("Invalid file, cannot write " + e.getMessage());
 
         }
     }
