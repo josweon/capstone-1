@@ -210,6 +210,7 @@ public class AccountingLedgerApp {
     }
 
     public static void showLedgerScreen() {
+        Collections.sort(ledger);
         String menu = """
                 \t==* L E D G E R *==
                 \tA) All
@@ -495,46 +496,43 @@ public class AccountingLedgerApp {
         System.out.println("\t==* M A K E * P A Y M E N T *==");
         ArrayList<Transaction> receipt = new ArrayList<>();
 
-        System.out.print("\tPayment to?: ");
-        String description = promptText();
-
-        int attempts = 3;
-        boolean valid = false;
-        String vendor;
-
+        String done;
         do {
-            System.out.print("\tEnter Debit card: ");
-            vendor = promptText();
-
-            if (vendor.isEmpty()) {
-                System.out.printf("%n\tNo information added%n\t%d Attempts left...%n%n", attempts);
-                attempts--;
-            } else if (vendor.length() < 16) {
-                System.out.printf("%n\tPlease enter a valid card%n\t%d Attempts left...%n%n", attempts);
-                attempts--;
-            } else {
-                valid = true;
-            }
-
-        } while (!valid && attempts > 0);
-
-        if (!valid) {
-            System.out.println("\tretry later...");
-        } else {
-
             double amount = 0;
-            while (amount == 0) {
-                System.out.print("\tEnter amount: $");
-                amount = promptAmount() * -1;
-            }
+            String description = null;
+            String vendor = null;
 
+            try {
+
+                System.out.print("\tEnter description: ");
+                description = scanner.nextLine().trim();
+
+                System.out.print("\tEnter vendor: ");
+                vendor = scanner.nextLine().trim();
+
+                while (amount == 0) {
+                    System.out.print("\tEnter amount: $");
+                    amount = promptAmount();
+                }
+            } catch (NullPointerException e) {
+                System.out.println("\tfields cannot be empty.");
+            }
             LocalDateTime now = LocalDateTime.now();
 
-            Transaction newTrans = new Transaction(now, description, vendor, amount);
-            recordTransaction(newTrans, receipt);
-            System.out.print("\n");
-            saveTransaction(receipt);
-        }
+            Transaction newTrans = new Transaction(now, description, vendor, amount * -1);
+            if (newTrans.getAmount() == 0) {
+                return;
+            } else {
+                recordTransaction(newTrans, receipt);
+            }
+
+            System.out.print("Would you like to add another? (y/n): ");
+            done = promptText();
+
+        } while (!done.equalsIgnoreCase("n"));
+        System.out.print("\n");
+
+        if (!receipt.isEmpty()) saveTransaction(receipt);
     }
 
     public static void saveTransaction(ArrayList<Transaction> receipt) {
