@@ -174,8 +174,7 @@ public class AccountingLedgerApp {
         }
         return deposits;
     }
-    //endregion
-    
+
     /**
      * Loads transactions that are payments *(on transaction.Amount(NEGATIVE))
      * eg: $-500.00
@@ -191,7 +190,119 @@ public class AccountingLedgerApp {
         }
         return payments;
     }
-    
+    //endregion
+
+    //region Reports Screen (1-5, 0)
+    public static void showReportsScreen() {
+        String menu = """
+                \t\t==* R E P O R T S *==
+                \t\t1) Month To Date
+                \t\t2) Previous Month
+                \t\t3) Year to Date
+                \t\t4) Previous Year
+                \t\t5) Search by Vendor
+                \t\t6) *BONUS* Custom Search
+                \t\t0) <- Go back
+                
+                \t\tEnter option:\s""";
+
+        boolean exit = false;
+        do {
+            System.out.print(menu);
+            String option = promptText();
+
+            switch (option) {
+                case "1" -> displayTransactions(monthToDate(), "mtd");
+                case "2" -> displayTransactions(previousMonth(), "pm");
+                case "3" -> displayTransactions(yearToDate(), "ytd");
+                case "4" -> displayTransactions(previousYear(), "py");
+                case "5" -> searchByVendor();
+                case "6" -> customSearch();
+                case "0" -> exit = true;
+
+                default -> System.out.println("Invalid Operation");
+            }
+        } while (!exit);
+    }
+
+    public static ArrayList<Transaction> monthToDate() {
+        ArrayList<Transaction> report = new ArrayList<>();
+        LocalDateTime currentDate = LocalDateTime.now();
+
+        for (Transaction t : ledger) {
+            boolean yearCheck = t.getDateTime().getYear() == currentDate.getYear();
+            boolean monthCheck = t.getDateTime().getMonthValue() == currentDate.getMonthValue();
+            if (yearCheck && monthCheck) {
+                report.add(t);
+            }
+        }
+        Collections.sort(report);
+        return report;
+    }
+
+    public static ArrayList<Transaction> previousMonth() {
+        ArrayList<Transaction> report = new ArrayList<>();
+        LocalDateTime currentDate = LocalDateTime.now();
+        LocalDateTime previousMonth = currentDate.minusMonths(1);
+
+        for (Transaction t : ledger) {
+            boolean monthCheck = t.getDateTime().getMonth().equals(previousMonth.getMonth());
+            boolean yearCheck = t.getDateTime().getYear() == previousMonth.getYear();
+            if (monthCheck && yearCheck) {
+                report.add(t);
+            }
+        }
+        Collections.sort(report);
+        return report;
+    }
+
+    public static ArrayList<Transaction> yearToDate() {
+        ArrayList<Transaction> report = new ArrayList<>();
+        LocalDateTime currentDate = LocalDateTime.now();
+
+        for (Transaction t : ledger) {
+            if (t.getDateTime().getYear() == currentDate.getYear()) {
+                report.add(t);
+            }
+        }
+        Collections.sort(report);
+        return report;
+    }
+
+    public static ArrayList<Transaction> previousYear() {
+        ArrayList<Transaction> report = new ArrayList<>();
+        LocalDateTime currentDate = LocalDateTime.now();
+        int prevYear = currentDate.getYear() - 1;
+
+        for (Transaction t : ledger) {
+            if (t.getDateTime().getYear() == prevYear) {
+                report.add(t);
+            }
+        }
+        Collections.sort(report);
+        return report;
+    }
+
+    public static void searchByVendor() {
+        System.out.println("\t\t==* V E N D O R * S E A R C H *==");
+        ArrayList<Transaction> report = new ArrayList<>();
+
+        System.out.print("\t\tSearch for vendor: ");
+        String input = promptText();
+
+        if (input.isEmpty()){
+            System.out.println("\t\tno vendors...\n");
+        } else {
+            for (Transaction t : ledger) {
+                if (t.getVendor().toLowerCase().contains(input.toLowerCase())) {
+                    report.add(t);
+                }
+            }
+            displayTransactions(report, "vs");
+        }
+    }
+    //endregion
+
     /**
      * Generates tables that show transactions with appropriate headings and clean formatting
      *
@@ -355,37 +466,7 @@ public class AccountingLedgerApp {
     //region Menus
 
 
-    public static void showReportsScreen() {
-        String menu = """
-                \t\t==* R E P O R T S *==
-                \t\t1) Month To Date
-                \t\t2) Previous Month
-                \t\t3) Year to Date
-                \t\t4) Previous Year
-                \t\t5) Search by Vendor
-                \t\t6) *BONUS* Custom Search
-                \t\t0) <- Go back
-                
-                \t\tEnter option:\s""";
 
-        boolean exit = false;
-        do {
-            System.out.print(menu);
-            String option = promptText();
-
-            switch (option) {
-                case "1" -> displayTransactions(monthToDate(), "mtd");
-                case "2" -> displayTransactions(previousMonth(), "pm");
-                case "3" -> displayTransactions(yearToDate(), "ytd");
-                case "4" -> displayTransactions(previousYear(), "py");
-                case "5" -> searchByVendor();
-                case "6" -> customSearch();
-                case "0" -> exit = true;
-
-                default -> System.out.println("Invalid Operation");
-            }
-        } while (!exit);
-    }
     //endregion
 
     public static void customSearch() {
@@ -489,85 +570,6 @@ public class AccountingLedgerApp {
             displayTransactions(filterTrans, "cs");
         }
     }
-
-    //region Reports
-    public static ArrayList<Transaction> previousYear() {
-        ArrayList<Transaction> report = new ArrayList<>();
-        LocalDateTime currentDate = LocalDateTime.now();
-        int prevYear = currentDate.getYear() - 1;
-
-        for (Transaction t : ledger) {
-            if (t.getDateTime().getYear() == prevYear) {
-                report.add(t);
-            }
-        }
-        Collections.sort(report);
-        return report;
-    }
-
-    public static ArrayList<Transaction> previousMonth() {
-        ArrayList<Transaction> report = new ArrayList<>();
-        LocalDateTime currentDate = LocalDateTime.now();
-        LocalDateTime previousMonth = currentDate.minusMonths(1);
-
-        for (Transaction t : ledger) {
-            boolean monthCheck = t.getDateTime().getMonth().equals(previousMonth.getMonth());
-            boolean yearCheck = t.getDateTime().getYear() == previousMonth.getYear();
-            if (monthCheck && yearCheck) {
-                report.add(t);
-            }
-        }
-        Collections.sort(report);
-        return report;
-    }
-
-    public static ArrayList<Transaction> yearToDate() {
-        ArrayList<Transaction> report = new ArrayList<>();
-        LocalDateTime currentDate = LocalDateTime.now();
-
-        for (Transaction t : ledger) {
-            if (t.getDateTime().getYear() == currentDate.getYear()) {
-                report.add(t);
-            }
-        }
-        Collections.sort(report);
-        return report;
-    }
-
-    public static ArrayList<Transaction> monthToDate() {
-        ArrayList<Transaction> report = new ArrayList<>();
-        LocalDateTime currentDate = LocalDateTime.now();
-
-        for (Transaction t : ledger) {
-            boolean yearCheck = t.getDateTime().getYear() == currentDate.getYear();
-            boolean monthCheck = t.getDateTime().getMonthValue() == currentDate.getMonthValue();
-            if (yearCheck && monthCheck) {
-                report.add(t);
-            }
-        }
-        Collections.sort(report);
-        return report;
-    }
-
-    public static void searchByVendor() {
-        System.out.println("\t\t==* V E N D O R * S E A R C H *==");
-        ArrayList<Transaction> report = new ArrayList<>();
-
-        System.out.print("\t\tSearch for vendor: ");
-        String input = promptText();
-
-        if (input.isEmpty()){
-            System.out.println("\t\tno vendors...\n");
-        } else {
-            for (Transaction t : ledger) {
-                if (t.getVendor().toLowerCase().contains(input.toLowerCase())) {
-                    report.add(t);
-                }
-            }
-            displayTransactions(report, "vs");
-        }
-    }
-    //endregion
 
     //region Helpers
 
