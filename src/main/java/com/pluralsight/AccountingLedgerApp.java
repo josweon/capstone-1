@@ -303,172 +303,7 @@ public class AccountingLedgerApp {
     }
     //endregion
 
-    /**
-     * Generates tables that show transactions with appropriate headings and clean formatting
-     *
-     * @param transactions ArrayList of parsed transactions
-     * @param transType string used to determine the appropriate for to be printed
-     */
-    public static void displayTransactions(ArrayList<Transaction> transactions, String transType) {
-
-        if (transactions.isEmpty()) {
-            System.out.println("no transactions found...");
-
-        } else {
-            String rowFormatHeading = "| %-10s | %-8s | %-30s | %-20s | %-10s | %n";
-            String rowFormat = "| %-10s | %-8s | %-30s | %-20s | $%-9.2f | %n";
-
-            String separator = "-".repeat(94);
-            String heading = " ".repeat(30);
-            String reportsHeading = "\nreport." + " ".repeat(19);
-            String searchHeading = "\nfilter applied." + " ".repeat(20);
-
-            String transHeader = "==* T R A N S A C T I O N S *==";
-            String depositHeader = "==* D E P O S I T S *==";
-            String paymentsHeader = "==* P A Y M E N T S *==";
-            String reportMonthToDate = "==* M O N T H * T O * D A T E *==";
-            String reportPreviousMonth = "==* P R E V * M O N T H *==";
-            String reportYearToDate = "==* Y E A R * T O * D A T E *==";
-            String reportPreviousYear = "==* P R E V * Y E A R *==";
-            String customHeader = "==* S E A R C H *==";
-
-            switch (transType) {
-                case "a" -> System.out.println(heading + transHeader);
-                case "d" -> System.out.println(heading + depositHeader);
-                case "p" -> System.out.println(heading + paymentsHeader);
-                case "mtd" -> System.out.println(reportsHeading + reportMonthToDate);
-                case "pm" -> System.out.println(reportsHeading + reportPreviousMonth);
-                case "ytd" -> System.out.println(reportsHeading + reportYearToDate);
-                case "py" -> System.out.println(reportsHeading + reportPreviousYear);
-                case "vs" -> System.out.println("\nvendor search.");
-                case "cs" -> System.out.println(searchHeading + customHeader);
-
-                default -> System.out.println("Invalid operation");
-            }
-
-            System.out.println(separator);
-            System.out.printf(rowFormatHeading, "Date", "Time", "Description", "Vendor", "Amount");
-            System.out.println(separator);
-
-            for (Transaction t : transactions) {
-                System.out.printf(rowFormat,
-                        t.getDateTime().format(dateOnly),
-                        t.getDateTime().format(timeOnly),
-                        t.getDescription(),
-                        t.getVendor(),
-                        t.getAmount());
-            }
-            System.out.println(separator);
-        }
-    }
-
-    /**
-     * Fancy welcome screen with custom ASCII art
-     */
-    public static void showWelcomeScreen() {
-        System.out.println("""
-            ╔═════════════════════════════════════════════╗
-            ║                                             ║
-            ║                 ██ ██████  ██               ║
-            ║                 ██ ██   ██ ██               ║
-            ║                 ██ ██   ██ ██               ║
-            ║            ██   ██ ██   ██ ██               ║
-            ║             █████  ██████  ███████          ║
-            ║                                             ║
-            ║    A C C O U N T I N G   S E R V I C E S    ║
-            ║                                             ║
-            ╚═════════════════════════════════════════════╝
-            """);
-        System.out.print("\t\t=* press ENTER to continue *=\n");
-        scanner.nextLine();
-    }
-
-    //endregion
-
-    //region Loaders
-
-    /**
-     * Loads transactions from csv with the following heading: date|time|description|vendor|amount
-     * NOTE: date format: yyyy-MM-dd, time format: HH:mm:ss
-     * Handles missing lines, malformed columns and incorrect data types.
-     */
-    public static void loadTransactions() {
-        try {
-            BufferedReader bufReader = new BufferedReader(new FileReader(PROD));
-            bufReader.readLine();
-
-            String input;
-            while ((input = bufReader.readLine()) != null) {
-                String[] tokens = input.split("\\|");
-                if (tokens.length < 5) {
-                    System.out.println("Skipping malformed lines: " + input);
-                    continue;
-                }
-                try {
-
-                    String formatDateTime = String.format("%sT%s", tokens[0], tokens[1]);
-                    LocalDateTime dateTime = LocalDateTime.parse(formatDateTime);
-                    String description = tokens[2];
-                    String vendor = tokens[3];
-                    double amount = Double.parseDouble(tokens[4]);
-
-                    ledger.add(new Transaction(dateTime, description, vendor, amount));
-
-                } catch (NumberFormatException e) {
-                    System.out.println("Invalid amount, skipping line " + input);
-                } catch (DateTimeParseException e) {
-                    System.out.println("Invalid datetime, skipping line " + input);
-                }
-            }
-            bufReader.close();
-
-        } catch (IOException e) {
-            System.out.println("Invalid IO stream, " + e.getMessage());
-        }
-    }
-
-    //endregion
-
-    //region Prompters
-
-    /**
-     * Helper method for prompting string.
-     * @return String free of trailing whitespace
-     */
-    public static String promptText() {
-        String text = scanner.nextLine();
-        return text.trim();
-    }
-
-    /**
-     * Helper method for prompting double that handles unfavorable inputs.
-     * @return double valid for inputting into transactions
-     */
-    public static double promptAmount() {
-        String text;
-        double amount = 0;
-
-        try {
-            text = scanner.nextLine().trim();
-            amount = Double.parseDouble(text);
-            if (amount < 0) {
-                System.out.print("\tInvalid input, positive <double> only\n");
-                amount = 0;
-            }
-
-        } catch (NumberFormatException e) {
-            System.out.println("\tInvalid input, not <double>");
-        }
-        return amount;
-    }
-    //endregion
-
-    //region Menus
-
-
-
-    //endregion
-
+    //region BONUS: Custom Search (6)
     public static void customSearch() {
         System.out.println("\t\t\t==* C U S T O M * S E A R C H *==");
         System.out.println("\t\t\tpress enter to skip field.\n");
@@ -570,9 +405,48 @@ public class AccountingLedgerApp {
             displayTransactions(filterTrans, "cs");
         }
     }
+    //endregion
 
-    //region Helpers
+    //region File I/O
+    /**
+     * Loads transactions from csv with the following heading: date|time|description|vendor|amount
+     * NOTE: date format: yyyy-MM-dd, time format: HH:mm:ss
+     * Handles missing lines, malformed columns and incorrect data types.
+     */
+    public static void loadTransactions() {
+        try {
+            BufferedReader bufReader = new BufferedReader(new FileReader(PROD));
+            bufReader.readLine();
 
+            String input;
+            while ((input = bufReader.readLine()) != null) {
+                String[] tokens = input.split("\\|");
+                if (tokens.length < 5) {
+                    System.out.println("Skipping malformed lines: " + input);
+                    continue;
+                }
+                try {
+
+                    String formatDateTime = String.format("%sT%s", tokens[0], tokens[1]);
+                    LocalDateTime dateTime = LocalDateTime.parse(formatDateTime);
+                    String description = tokens[2];
+                    String vendor = tokens[3];
+                    double amount = Double.parseDouble(tokens[4]);
+
+                    ledger.add(new Transaction(dateTime, description, vendor, amount));
+
+                } catch (NumberFormatException e) {
+                    System.out.println("Invalid amount, skipping line " + input);
+                } catch (DateTimeParseException e) {
+                    System.out.println("Invalid datetime, skipping line " + input);
+                }
+            }
+            bufReader.close();
+
+        } catch (IOException e) {
+            System.out.println("Invalid IO stream, " + e.getMessage());
+        }
+    }
 
     public static void saveTransaction(Transaction t) {
         try {
@@ -600,6 +474,121 @@ public class AccountingLedgerApp {
     public static void recordTransaction(Transaction t) {
         ledger.add(t);
         System.out.println("\n\t\t=* success! *=\n");
+    }
+    //endregion
+
+    //region Input Helpers
+    /**
+     * Helper method for prompting string.
+     * @return String free of trailing whitespace
+     */
+    public static String promptText() {
+        String text = scanner.nextLine();
+        return text.trim();
+    }
+
+    /**
+     * Helper method for prompting double that handles unfavorable inputs.
+     * @return double valid for inputting into transactions
+     */
+    public static double promptAmount() {
+        String text;
+        double amount = 0;
+
+        try {
+            text = scanner.nextLine().trim();
+            amount = Double.parseDouble(text);
+            if (amount < 0) {
+                System.out.print("\tInvalid input, positive <double> only\n");
+                amount = 0;
+            }
+
+        } catch (NumberFormatException e) {
+            System.out.println("\tInvalid input, not <double>");
+        }
+        return amount;
+    }
+    //endregion
+
+    //region Display / Formatting
+    /**
+     * Fancy welcome screen with custom ASCII art
+     */
+    public static void showWelcomeScreen() {
+        System.out.println("""
+            ╔═════════════════════════════════════════════╗
+            ║                                             ║
+            ║                 ██ ██████  ██               ║
+            ║                 ██ ██   ██ ██               ║
+            ║                 ██ ██   ██ ██               ║
+            ║            ██   ██ ██   ██ ██               ║
+            ║             █████  ██████  ███████          ║
+            ║                                             ║
+            ║    A C C O U N T I N G   S E R V I C E S    ║
+            ║                                             ║
+            ╚═════════════════════════════════════════════╝
+            """);
+        System.out.print("\t\t=* press ENTER to continue *=\n");
+        scanner.nextLine();
+    }
+
+    /**
+     * Generates tables that show transactions with appropriate headings and clean formatting
+     *
+     * @param transactions ArrayList of parsed transactions
+     * @param transType string used to determine the appropriate for to be printed
+     */
+    public static void displayTransactions(ArrayList<Transaction> transactions, String transType) {
+
+        if (transactions.isEmpty()) {
+            System.out.println("no transactions found...");
+
+        } else {
+            String rowFormatHeading = "| %-10s | %-8s | %-30s | %-20s | %-10s | %n";
+            String rowFormat = "| %-10s | %-8s | %-30s | %-20s | $%-9.2f | %n";
+
+            String separator = "-".repeat(94);
+            String heading = " ".repeat(30);
+            String reportsHeading = "\nreport." + " ".repeat(19);
+            String searchHeading = "\nfilter applied." + " ".repeat(20);
+
+            String transHeader = "==* T R A N S A C T I O N S *==";
+            String depositHeader = "==* D E P O S I T S *==";
+            String paymentsHeader = "==* P A Y M E N T S *==";
+            String reportMonthToDate = "==* M O N T H * T O * D A T E *==";
+            String reportPreviousMonth = "==* P R E V * M O N T H *==";
+            String reportYearToDate = "==* Y E A R * T O * D A T E *==";
+            String reportPreviousYear = "==* P R E V * Y E A R *==";
+            String customHeader = "==* S E A R C H *==";
+
+            switch (transType) {
+                case "a" -> System.out.println(heading + transHeader);
+                case "d" -> System.out.println(heading + depositHeader);
+                case "p" -> System.out.println(heading + paymentsHeader);
+                case "mtd" -> System.out.println(reportsHeading + reportMonthToDate);
+                case "pm" -> System.out.println(reportsHeading + reportPreviousMonth);
+                case "ytd" -> System.out.println(reportsHeading + reportYearToDate);
+                case "py" -> System.out.println(reportsHeading + reportPreviousYear);
+                case "vs" -> System.out.println("\nvendor search.");
+                case "cs" -> System.out.println(searchHeading + customHeader);
+
+                default -> System.out.println("Invalid operation");
+            }
+
+            System.out.println(separator);
+            System.out.printf(rowFormatHeading, "Date", "Time", "Description", "Vendor", "Amount");
+            System.out.println(separator);
+
+            for (Transaction t : transactions) {
+                System.out.printf(rowFormat,
+                        t.getDateTime().format(dateOnly),
+                        t.getDateTime().format(timeOnly),
+                        t.getDescription(),
+                        t.getVendor(),
+                        t.getAmount());
+            }
+            System.out.println(separator);
+        }
     }
     //endregion
 }
