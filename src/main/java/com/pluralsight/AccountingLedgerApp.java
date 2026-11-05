@@ -18,8 +18,10 @@ public class AccountingLedgerApp {
     static DateTimeFormatter dateOnly = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     static DateTimeFormatter timeOnly = DateTimeFormatter.ofPattern("HH:mm:ss");
 
-    //    static String PROD = "src/main/resources/transactions.csv";
-    static String TEST = "src/main/resources/test-transactions.csv";
+    static String PROD = "src/main/resources/transactions.csv";
+
+    //csv for testing
+    //static String TEST = "src/main/resources/test-transactions.csv";
     //endregion
 
     public static void main(String[] args) {
@@ -85,7 +87,7 @@ public class AccountingLedgerApp {
     //region Loaders
     public static void loadTransactions() {
         try {
-            BufferedReader bufReader = new BufferedReader(new FileReader(TEST));
+            BufferedReader bufReader = new BufferedReader(new FileReader(PROD));
             bufReader.readLine();
 
             String input;
@@ -191,7 +193,7 @@ public class AccountingLedgerApp {
                 default -> System.out.println("Invalid Operation");
             }
         } while (!exit);
-        System.out.println("Thank you for using our services.");
+        System.out.println("\n=* Thank you for using JDL Accounting Services *=");
     }
 
     public static void showLedgerScreen() {
@@ -507,7 +509,7 @@ public class AccountingLedgerApp {
 
     public static void saveTransaction(Transaction t) {
         try {
-            BufferedWriter bufWriter = new BufferedWriter(new FileWriter(TEST, true));
+            BufferedWriter bufWriter = new BufferedWriter(new FileWriter(PROD, true));
 
             String date = (t.getDateTime()).format(dateOnly);
             String time = (t.getDateTime()).format(timeOnly);
