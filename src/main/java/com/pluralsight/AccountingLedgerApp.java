@@ -180,7 +180,7 @@ public class AccountingLedgerApp {
         boolean exit = false;
         do {
             System.out.print(menu);
-            String option = promptText();
+            String option = promptText().toLowerCase();
 
             switch (option) {
                 case "d" -> addDeposit();
@@ -380,7 +380,7 @@ public class AccountingLedgerApp {
 
         for (Transaction t : ledger) {
             boolean monthCheck = t.getDateTime().getMonth().equals(previousMonth.getMonth());
-            boolean yearCheck = t.getDateTime().getYear() == currentDate.getYear();
+            boolean yearCheck = t.getDateTime().getYear() == previousMonth.getYear();
             if (monthCheck && yearCheck) {
                 report.add(t);
             }
@@ -425,7 +425,7 @@ public class AccountingLedgerApp {
         String input = promptText();
 
         for (Transaction t : ledger) {
-            if (t.getVendor().toLowerCase().contains(input)) {
+            if (t.getVendor().toLowerCase().contains(input.toLowerCase())) {
                 report.add(t);
             }
         }
