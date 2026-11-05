@@ -25,6 +25,7 @@ public class AccountingLedgerApp {
     //endregion
 
     public static void main(String[] args) {
+        showWelcomeScreen();
         loadTransactions();
         showHomeScreen();
     }
@@ -39,7 +40,7 @@ public class AccountingLedgerApp {
             String rowFormat = "| %-10s | %-8s | %-30s | %-20s | $%-9.2f | %n";
 
             String separator = "-".repeat(94);
-            String heading = " ".repeat(35);
+            String heading = " ".repeat(30);
             String reportsHeading = "\nreport." + " ".repeat(19);
             String searchHeading = "\nfilter applied." + " ".repeat(20);
 
@@ -82,6 +83,24 @@ public class AccountingLedgerApp {
         }
     }
 
+    public static void showWelcomeScreen() {
+        System.out.println("""
+            ╔═════════════════════════════════════════════╗
+            ║                                             ║
+            ║                 ██ ██████  ██               ║
+            ║                 ██ ██   ██ ██               ║
+            ║                 ██ ██   ██ ██               ║
+            ║            ██   ██ ██   ██ ██               ║
+            ║             █████  ██████  ███████          ║
+            ║                                             ║
+            ║    A C C O U N T I N G   S E R V I C E S    ║
+            ║                                             ║
+            ╚═════════════════════════════════════════════╝
+            """);
+        System.out.print("\t\t=* press ENTER to continue *=\n");
+        scanner.nextLine();
+    }
+
     //endregion
 
     //region Loaders
@@ -98,6 +117,7 @@ public class AccountingLedgerApp {
                     continue;
                 }
                 try {
+
                     String formatDateTime = String.format("%sT%s", tokens[0], tokens[1]);
                     LocalDateTime dateTime = LocalDateTime.parse(formatDateTime);
                     String description = tokens[2];
