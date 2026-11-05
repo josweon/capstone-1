@@ -172,6 +172,9 @@ public class AccountingLedgerApp {
         try {
             text = scanner.nextLine().trim();
             amount = Double.parseDouble(text);
+            if (amount < 0) {
+                amount = 0;
+            }
 
         } catch (NumberFormatException e) {
             System.out.println("ERROR: Input not <double>");
