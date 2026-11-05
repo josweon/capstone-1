@@ -80,25 +80,6 @@ public class AccountingLedgerApp {
         }
     }
 
-    public static void displayReceipt(ArrayList<Transaction> receipt) {
-        String rowFormatHeading = "| %-10s | %-8s | %-20s | %-20s | %-10s | %n";
-        String rowFormat = "| %-10s | %-8s | %-20s | %-20s | $%-9.2f | %n";
-
-        String separator = "-".repeat(84);
-
-        System.out.println(separator);
-        System.out.printf(rowFormatHeading, "Date", "Time", "Description", "Vendor", "Amount");
-        System.out.println(separator);
-
-        for (Transaction t : receipt) {
-            System.out.printf(rowFormat,
-                    t.getDateTime().format(dateOnly),
-                    t.getDateTime().format(timeOnly),
-                    t.getDescription(),
-                    t.getVendor(),
-                    t.getAmount());
-        }
-    }
     //endregion
 
     //region Loaders
@@ -173,11 +154,12 @@ public class AccountingLedgerApp {
             text = scanner.nextLine().trim();
             amount = Double.parseDouble(text);
             if (amount < 0) {
+                System.out.print("\t<positive only>\n");
                 amount = 0;
             }
 
         } catch (NumberFormatException e) {
-            System.out.println("ERROR: Input not <double>");
+            System.out.println("\tERROR: Input not <double>");
         }
         return amount;
     }
@@ -454,116 +436,97 @@ public class AccountingLedgerApp {
     //region Helpers
     public static void addDeposit() {
         System.out.println("\t==* A D D * D E P O S I T *==");
-        ArrayList<Transaction> receipt = new ArrayList<>();
 
-        String done;
+        double amount = 0;
+        String description;
+        String vendor;
+
+        while (amount == 0) {
+            System.out.print("\tEnter amount: $");
+            amount = promptAmount();
+        }
+
+        boolean isEmpty;
         do {
-            double amount = 0;
-            String description = null;
-            String vendor = null;
+            System.out.print("\tEnter description: ");
+            description = scanner.nextLine().trim();
 
-            try {
+            System.out.print("\tEnter vendor: ");
+            vendor = scanner.nextLine().trim();
 
-                while (amount == 0) {
-                    System.out.print("\tEnter amount: $");
-                    amount = promptAmount();
-                }
+            isEmpty = description.isEmpty() || vendor.isEmpty();
 
-                System.out.print("\tEnter description: ");
-                description = scanner.nextLine().trim();
-
-                System.out.print("\tEnter vendor: ");
-                vendor = scanner.nextLine().trim();
-            } catch (NullPointerException e) {
-                System.out.println("\tfields cannot be empty.");
-            }
-            LocalDateTime now = LocalDateTime.now();
-
-            Transaction newTrans = new Transaction(now, description, vendor, amount);
-            if (newTrans.getAmount() == 0) {
-                return;
-            } else {
-                recordTransaction(newTrans, receipt);
+            if (isEmpty) {
+                System.out.println("\tfields cannot be empty.\n");
             }
 
-            System.out.print("Would you like to add another? (y/n): ");
-            done = promptText();
+        } while (isEmpty);
 
-        } while (!done.equalsIgnoreCase("n"));
-        System.out.print("\n");
+        LocalDateTime now = LocalDateTime.now();
 
-        if (!receipt.isEmpty()) saveTransaction(receipt);
+        Transaction newTrans = new Transaction(now, description, vendor, amount);
+
+        recordTransaction(newTrans);
+        saveTransaction(newTrans);
     }
 
     public static void makePayment() {
         System.out.println("\t==* M A K E * P A Y M E N T *==");
-        ArrayList<Transaction> receipt = new ArrayList<>();
 
-        String done;
+        double amount = 0;
+        String description;
+        String vendor;
+
         do {
-            double amount = 0;
-            String description = null;
-            String vendor = null;
+            System.out.print("\tEnter description: ");
+            description = scanner.nextLine().trim();
 
-            try {
+            System.out.print("\tEnter vendor: ");
+            vendor = scanner.nextLine().trim();
 
-                System.out.print("\tEnter description: ");
-                description = scanner.nextLine().trim();
-
-                System.out.print("\tEnter vendor: ");
-                vendor = scanner.nextLine().trim();
-
-                while (amount == 0) {
-                    System.out.print("\tEnter amount: $");
-                    amount = promptAmount();
-                }
-            } catch (NullPointerException e) {
-                System.out.println("\tfields cannot be empty.");
+            if (description.isEmpty() || vendor.isEmpty()){
+                System.out.println("\tfields cannot be empty.\n");
             }
-            LocalDateTime now = LocalDateTime.now();
+        } while (description.isEmpty() || vendor.isEmpty());
 
-            Transaction newTrans = new Transaction(now, description, vendor, amount * -1);
-            if (newTrans.getAmount() == 0) {
-                return;
-            } else {
-                recordTransaction(newTrans, receipt);
-            }
+        while (amount == 0) {
+            System.out.print("\tEnter amount: $");
+            amount = promptAmount();
+        }
+        LocalDateTime now = LocalDateTime.now();
 
-            System.out.print("Would you like to add another? (y/n): ");
-            done = promptText();
+        Transaction newTrans = new Transaction(now, description, vendor, amount * -1);
 
-        } while (!done.equalsIgnoreCase("n"));
-        System.out.print("\n");
-
-        if (!receipt.isEmpty()) saveTransaction(receipt);
+        recordTransaction(newTrans);
+        saveTransaction(newTrans);
     }
 
-    public static void saveTransaction(ArrayList<Transaction> receipt) {
+    public static void saveTransaction(Transaction t) {
         try {
             BufferedWriter bufWriter = new BufferedWriter(new FileWriter(TEST, true));
-            for (Transaction t : receipt) {
-                String date = (t.getDateTime()).format(dateOnly);
-                String time = (t.getDateTime()).format(timeOnly);
-                String record = String.format("%n%s|%s|%s|%s|%.2f",
-                        date,
-                        time,
-                        t.getDescription(),
-                        t.getVendor(),
-                        t.getAmount());
 
-                bufWriter.write(record);
-            }
+            String date = (t.getDateTime()).format(dateOnly);
+            String time = (t.getDateTime()).format(timeOnly);
+            String record = String.format("%s|%s|%s|%s|%.2f",
+                    date,
+                    time,
+                    t.getDescription(),
+                    t.getVendor(),
+                    t.getAmount());
+
+            bufWriter.write(record);
+            bufWriter.newLine();
+
             bufWriter.close();
         } catch (IOException e) {
             System.out.println("ERROR: Cannot write to file " + e.getMessage());
+
         }
     }
 
-    public static void recordTransaction(Transaction t, ArrayList<Transaction> receipt) {
+    public static void recordTransaction(Transaction t) {
         ledger.add(t);
-        receipt.add(t);
-        System.out.println("\nsuccess!");
-        displayReceipt(receipt);
+        System.out.println("\n\t\t=* success! *=\n");
     }
     //endregion
 }
