@@ -1,6 +1,6 @@
 ## Home Stretch
 -[x] Get Screenshot with lanterna tui for future improvements
--[] Organize codebase for grading
+-[x] Organize codebase for grading
 -[] Start README.md (https://github.com/id3283/capstone-advice)
 -[] add docstring
 
