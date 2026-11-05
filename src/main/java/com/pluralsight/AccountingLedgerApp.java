@@ -31,7 +31,15 @@ public class AccountingLedgerApp {
     }
 
     //region Displays
+
+    /**
+     * Generates tables that show transactions with appropriate headings and clean formatting
+     *
+     * @param transactions ArrayList of parsed transactions
+     * @param transType string used to determine the appropriate for to be printed
+     */
     public static void displayTransactions(ArrayList<Transaction> transactions, String transType) {
+
         if (transactions.isEmpty()) {
             System.out.println("no transactions found...");
 
@@ -83,6 +91,9 @@ public class AccountingLedgerApp {
         }
     }
 
+    /**
+     * Fancy welcome screen with custom ASCII art
+     */
     public static void showWelcomeScreen() {
         System.out.println("""
             ╔═════════════════════════════════════════════╗
@@ -104,6 +115,12 @@ public class AccountingLedgerApp {
     //endregion
 
     //region Loaders
+
+    /**
+     * Loads transactions from csv with the following heading: date|time|description|vendor|amount
+     * NOTE: date format: yyyy-MM-dd, time format: HH:mm:ss
+     * Handles missing lines, malformed columns and incorrect data types.
+     */
     public static void loadTransactions() {
         try {
             BufferedReader bufReader = new BufferedReader(new FileReader(PROD));
@@ -139,6 +156,11 @@ public class AccountingLedgerApp {
         }
     }
 
+    /**
+     * Loads transactions that are deposits *(on transaction.Amount(POSITIVE))
+     * eg: $500.00
+     * @return sorted ArrayList containing ONLY deposit transactions
+     */
     public static ArrayList<Transaction> loadDeposits() {
         ArrayList<Transaction> deposits = new ArrayList<>();
 
@@ -150,6 +172,11 @@ public class AccountingLedgerApp {
         return deposits;
     }
 
+    /**
+     * Loads transactions that are payments *(on transaction.Amount(NEGATIVE))
+     * eg: $-500.00
+     * @return sorted ArrayList containing ONLY payments transactions
+     */
     public static ArrayList<Transaction> loadPayments() {
         ArrayList<Transaction> payments = new ArrayList<>();
 
@@ -163,11 +190,20 @@ public class AccountingLedgerApp {
     //endregion
 
     //region Prompters
+
+    /**
+     * Helper method for prompting string.
+     * @return String free of trailing whitespace
+     */
     public static String promptText() {
         String text = scanner.nextLine();
         return text.trim();
     }
 
+    /**
+     * Helper method for prompting double that handles unfavorable inputs.
+     * @return double valid for inputting into transactions
+     */
     public static double promptAmount() {
         String text;
         double amount = 0;
