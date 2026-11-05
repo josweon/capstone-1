@@ -18,7 +18,7 @@ public class AccountingLedgerApp {
     static DateTimeFormatter dateOnly = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     static DateTimeFormatter timeOnly = DateTimeFormatter.ofPattern("HH:mm:ss");
 
-//    static String PROD = "src/main/resources/transactions.csv";
+    //    static String PROD = "src/main/resources/transactions.csv";
     static String TEST = "src/main/resources/test-transactions.csv";
     //endregion
 
@@ -162,7 +162,7 @@ public class AccountingLedgerApp {
     //region Prompters
     public static String promptText() {
         String text = scanner.nextLine();
-        return text.trim().toLowerCase();
+        return text.trim();
     }
 
     public static double promptAmount() {
@@ -270,64 +270,63 @@ public class AccountingLedgerApp {
     }
     //endregion
 
-        public static void customSearch() {
-            System.out.println("\t\t\t==* C U S T O M * S E A R C H *==");
-            System.out.println("\t\t\tpress enter to skip field.\n");
+    public static void customSearch() {
+        System.out.println("\t\t\t==* C U S T O M * S E A R C H *==");
+        System.out.println("\t\t\tpress enter to skip field.\n");
 
-            LocalDateTime startDate = null;
-            LocalDateTime endDate = null;
-            String description;
-            String vendor;
-            Double amount = null;
+        LocalDateTime startDate = null;
+        LocalDateTime endDate = null;
+        String description;
+        String vendor;
+        Double amount = null;
 
-            // TODO: Fix dateTime input
-            System.out.print("\t\t\tEnter Start Date(yyyy-MM-dd): ");
-            String startDateInput = promptText();
-            if (!startDateInput.isEmpty()) {
-                try {
-                    startDate = LocalDate.parse(startDateInput, dateOnly).atStartOfDay();
-                } catch (DateTimeParseException e) {
-                    System.out.println("\t\t\tERROR: Input is not a DateTime");
-                }
+        System.out.print("\t\t\tEnter Start Date(yyyy-MM-dd): ");
+        String startDateInput = promptText();
+        if (!startDateInput.isEmpty()) {
+            try {
+                startDate = LocalDate.parse(startDateInput, dateOnly).atStartOfDay();
+            } catch (DateTimeParseException e) {
+                System.out.println("\t\t\tERROR: Input is not a DateTime");
             }
-
-            System.out.print("\t\t\tEnter End Date(yyyy-MM-dd): ");
-            String endDateInput = promptText();
-            if (!endDateInput.isEmpty()) {
-                try {
-                    endDate = LocalDate.parse(endDateInput, dateOnly).atTime(LocalTime.MAX);
-                } catch (DateTimeParseException e) {
-                    System.out.println("\t\t\tERROR: Input is not a DateTime");
-                }
-            }
-
-            System.out.print("\t\t\tEnter Description: ");
-            description = promptText();
-
-            System.out.print("\t\t\tEnter Vendor: ");
-            vendor = promptText();
-
-            System.out.print("\t\t\tEnter Amount: $");
-            String amountInput = promptText();
-            if (!amountInput.isEmpty())
-                try {
-                    amount = Double.parseDouble(amountInput);
-                } catch (NumberFormatException e) {
-                    System.out.println("\t\t\tERROR: Input is not Double");
-            }
-
-            filterSearch(startDate, endDate, description, vendor, amount);
         }
 
-    private static void filterSearch(LocalDateTime startDate,
-                                     LocalDateTime endDate,
-                                     String description,
-                                     String vendor,
-                                     Double amount) {
+        System.out.print("\t\t\tEnter End Date(yyyy-MM-dd): ");
+        String endDateInput = promptText();
+        if (!endDateInput.isEmpty()) {
+            try {
+                endDate = LocalDate.parse(endDateInput, dateOnly).atTime(LocalTime.MAX);
+            } catch (DateTimeParseException e) {
+                System.out.println("\t\t\tERROR: Input is not a DateTime");
+            }
+        }
+
+        System.out.print("\t\t\tEnter Description: ");
+        description = promptText();
+
+        System.out.print("\t\t\tEnter Vendor: ");
+        vendor = promptText();
+
+        System.out.print("\t\t\tEnter Amount: $");
+        String amountInput = promptText();
+        if (!amountInput.isEmpty())
+            try {
+                amount = Double.parseDouble(amountInput);
+            } catch (NumberFormatException e) {
+                System.out.println("\t\t\tERROR: Input is not Double");
+            }
+
+        filterSearch(startDate, endDate, description, vendor, amount);
+    }
+
+    public static void filterSearch(LocalDateTime startDate,
+                                    LocalDateTime endDate,
+                                    String description,
+                                    String vendor,
+                                    Double amount) {
 
         ArrayList<Transaction> filterTrans = new ArrayList<>();
 
-        for (Transaction t: ledger) {
+        for (Transaction t : ledger) {
             boolean isMatch = true;
 
             if (startDate != null) {
@@ -351,7 +350,7 @@ public class AccountingLedgerApp {
 
             if (isMatch && vendor != null && !vendor.isEmpty()) {
                 String transVendor = t.getVendor().toLowerCase();
-                if (!transVendor.contains(vendor.toLowerCase())){
+                if (!transVendor.contains(vendor.toLowerCase())) {
                     isMatch = false;
                 }
             }
@@ -366,200 +365,204 @@ public class AccountingLedgerApp {
                 filterTrans.add(t);
             }
         }
-        if (filterTrans.isEmpty()){
+        if (filterTrans.isEmpty()) {
             System.out.println("\n\t\t\tno matches.");
         } else {
             displayTransactions(filterTrans, "cs");
         }
     }
 
-        //region Reports
-        public static ArrayList<Transaction> previousYear () {
-            ArrayList<Transaction> report = new ArrayList<>();
-            LocalDateTime currentDate = LocalDateTime.now();
-            int prevYear = currentDate.getYear() - 1;
+    //region Reports
+    public static ArrayList<Transaction> previousYear() {
+        ArrayList<Transaction> report = new ArrayList<>();
+        LocalDateTime currentDate = LocalDateTime.now();
+        int prevYear = currentDate.getYear() - 1;
 
-            for (Transaction t : ledger) {
-                if (t.getDateTime().getYear() == prevYear) {
-                    report.add(t);
-                }
+        for (Transaction t : ledger) {
+            if (t.getDateTime().getYear() == prevYear) {
+                report.add(t);
             }
-            Collections.sort(report);
-            return report;
         }
+        Collections.sort(report);
+        return report;
+    }
 
-        public static ArrayList<Transaction> previousMonth () {
-            ArrayList<Transaction> report = new ArrayList<>();
-            LocalDateTime currentDate = LocalDateTime.now();
-            int prevMonth = currentDate.getMonthValue() - 1;
+    public static ArrayList<Transaction> previousMonth() {
+        ArrayList<Transaction> report = new ArrayList<>();
+        LocalDateTime currentDate = LocalDateTime.now();
+        LocalDateTime previousMonth = currentDate.minusMonths(1);
 
-            for (Transaction t : ledger) {
-                if (t.getDateTime().getMonthValue() == prevMonth) {
-                    report.add(t);
-                }
+        for (Transaction t : ledger) {
+            boolean monthCheck = t.getDateTime().getMonth().equals(previousMonth.getMonth());
+            boolean yearCheck = t.getDateTime().getYear() == currentDate.getYear();
+            if (monthCheck && yearCheck) {
+                report.add(t);
             }
-            Collections.sort(report);
-            return report;
         }
+        Collections.sort(report);
+        return report;
+    }
 
-        public static ArrayList<Transaction> yearToDate () {
-            ArrayList<Transaction> report = new ArrayList<>();
-            LocalDateTime currentDate = LocalDateTime.now();
+    public static ArrayList<Transaction> yearToDate() {
+        ArrayList<Transaction> report = new ArrayList<>();
+        LocalDateTime currentDate = LocalDateTime.now();
 
-            for (Transaction t : ledger) {
-                if (t.getDateTime().getYear() == currentDate.getYear()) {
-                    report.add(t);
-                }
+        for (Transaction t : ledger) {
+            if (t.getDateTime().getYear() == currentDate.getYear()) {
+                report.add(t);
             }
-            Collections.sort(report);
-            return report;
         }
+        Collections.sort(report);
+        return report;
+    }
 
-        public static ArrayList<Transaction> monthToDate () {
-            ArrayList<Transaction> report = new ArrayList<>();
-            LocalDateTime currentDate = LocalDateTime.now();
+    public static ArrayList<Transaction> monthToDate() {
+        ArrayList<Transaction> report = new ArrayList<>();
+        LocalDateTime currentDate = LocalDateTime.now();
 
-            for (Transaction t : ledger) {
-                if (t.getDateTime().getMonthValue() == currentDate.getMonthValue()) {
-                    report.add(t);
-                }
+        for (Transaction t : ledger) {
+            boolean yearCheck = t.getDateTime().getYear() == currentDate.getYear();
+            boolean monthCheck = t.getDateTime().getMonthValue() == currentDate.getMonthValue();
+            if (yearCheck && monthCheck) {
+                report.add(t);
             }
-            Collections.sort(report);
-            return report;
         }
+        Collections.sort(report);
+        return report;
+    }
 
-        public static void searchByVendor () {
-            System.out.println("\t\t==* V E N D O R * S E A R C H *==");
-            ArrayList<Transaction> report = new ArrayList<>();
+    public static void searchByVendor() {
+        System.out.println("\t\t==* V E N D O R * S E A R C H *==");
+        ArrayList<Transaction> report = new ArrayList<>();
 
-            System.out.print("\t\tSearch for vendor: ");
-            String input = promptText();
+        System.out.print("\t\tSearch for vendor: ");
+        String input = promptText();
 
-            for (Transaction t : ledger) {
-                if (t.getVendor().equalsIgnoreCase(input)) {
-                    report.add(t);
-                }
+        for (Transaction t : ledger) {
+            if (t.getVendor().toLowerCase().contains(input)) {
+                report.add(t);
             }
-            displayTransactions(report, "vs");
         }
-        //endregion
+        displayTransactions(report, "vs");
+    }
+    //endregion
 
-        //region Helpers
-        public static void addDeposit () {
-            System.out.println("\t==* A D D * D E P O S I T *==");
-            ArrayList<Transaction> receipt = new ArrayList<>();
+    //region Helpers
+    public static void addDeposit() {
+        System.out.println("\t==* A D D * D E P O S I T *==");
+        ArrayList<Transaction> receipt = new ArrayList<>();
 
-            String done;
-            do {
-                double amount = 0;
-                String description = null;
-                String vendor = null;
+        String done;
+        do {
+            double amount = 0;
+            String description = null;
+            String vendor = null;
 
-                try {
+            try {
 
-                    while (amount == 0) {
-                        System.out.print("\tEnter amount: $");
-                        amount = promptAmount();
-                    }
-
-                    System.out.print("\tEnter description: ");
-                    description = scanner.nextLine().trim();
-
-                    System.out.print("\tEnter vendor: ");
-                    vendor = scanner.nextLine().trim();
-                } catch (NullPointerException e) {
-                    System.out.println("\tfields cannot be empty.");
-                }
-                LocalDateTime now = LocalDateTime.now();
-
-                Transaction newTrans = new Transaction(now, description, vendor, amount);
-                if (newTrans.getAmount() == 0) {
-                    return;
-                } else {
-                    recordTransaction(newTrans, receipt);
-                }
-
-                System.out.print("Would you like to add another? (y/n): ");
-                done = promptText();
-
-            } while (!done.equalsIgnoreCase("n"));
-            System.out.print("\n");
-
-            if (!receipt.isEmpty()) saveTransaction(receipt);
-        }
-
-        public static void makePayment () {
-            System.out.println("\t==* M A K E * P A Y M E N T *==");
-            ArrayList<Transaction> receipt = new ArrayList<>();
-
-            System.out.print("\tPayment to?: ");
-            String description = promptText();
-
-            int attempts = 3;
-            boolean valid = false;
-            String vendor;
-
-            do {
-                System.out.print("\tEnter Debit card: ");
-                vendor = promptText();
-
-                if (vendor.isEmpty()) {
-                    System.out.printf("%n\tNo information added%n\t%d Attempts left...%n%n", attempts);
-                    attempts--;
-                } else if (vendor.length() < 16) {
-                    System.out.printf("%n\tPlease enter a valid card%n\t%d Attempts left...%n%n", attempts);
-                    attempts--;
-                } else {
-                    valid = true;
-                }
-
-            } while (!valid && attempts > 0);
-
-            if (!valid) {
-                System.out.println("\tretry later...");
-            } else {
-
-                double amount = 0;
                 while (amount == 0) {
                     System.out.print("\tEnter amount: $");
-                    amount = promptAmount() * -1;
+                    amount = promptAmount();
                 }
 
-                LocalDateTime now = LocalDateTime.now();
+                System.out.print("\tEnter description: ");
+                description = scanner.nextLine().trim();
 
-                Transaction newTrans = new Transaction(now, description, vendor, amount);
+                System.out.print("\tEnter vendor: ");
+                vendor = scanner.nextLine().trim();
+            } catch (NullPointerException e) {
+                System.out.println("\tfields cannot be empty.");
+            }
+            LocalDateTime now = LocalDateTime.now();
+
+            Transaction newTrans = new Transaction(now, description, vendor, amount);
+            if (newTrans.getAmount() == 0) {
+                return;
+            } else {
                 recordTransaction(newTrans, receipt);
-                System.out.print("\n");
-                saveTransaction(receipt);
             }
-        }
 
-        public static void saveTransaction (ArrayList < Transaction > receipt) {
-            try {
-                BufferedWriter bufWriter = new BufferedWriter(new FileWriter(TEST, true));
-                for (Transaction t : receipt) {
-                    String date = (t.getDateTime()).format(dateOnly);
-                    String time = (t.getDateTime()).format(timeOnly);
-                    String record = String.format("%n%s|%s|%s|%s|%.2f",
-                            date,
-                            time,
-                            t.getDescription(),
-                            t.getVendor(),
-                            t.getAmount());
+            System.out.print("Would you like to add another? (y/n): ");
+            done = promptText();
 
-                    bufWriter.write(record);
-                }
-                bufWriter.close();
-            } catch (IOException e) {
-                System.out.println("ERROR: Cannot write to file " + e.getMessage());
-            }
-        }
+        } while (!done.equalsIgnoreCase("n"));
+        System.out.print("\n");
 
-        public static void recordTransaction (Transaction t, ArrayList < Transaction > receipt){
-            ledger.add(t);
-            receipt.add(t);
-            System.out.println("\nsuccess!");
-            displayReceipt(receipt);
-        }
-        //endregion
+        if (!receipt.isEmpty()) saveTransaction(receipt);
     }
+
+    public static void makePayment() {
+        System.out.println("\t==* M A K E * P A Y M E N T *==");
+        ArrayList<Transaction> receipt = new ArrayList<>();
+
+        System.out.print("\tPayment to?: ");
+        String description = promptText();
+
+        int attempts = 3;
+        boolean valid = false;
+        String vendor;
+
+        do {
+            System.out.print("\tEnter Debit card: ");
+            vendor = promptText();
+
+            if (vendor.isEmpty()) {
+                System.out.printf("%n\tNo information added%n\t%d Attempts left...%n%n", attempts);
+                attempts--;
+            } else if (vendor.length() < 16) {
+                System.out.printf("%n\tPlease enter a valid card%n\t%d Attempts left...%n%n", attempts);
+                attempts--;
+            } else {
+                valid = true;
+            }
+
+        } while (!valid && attempts > 0);
+
+        if (!valid) {
+            System.out.println("\tretry later...");
+        } else {
+
+            double amount = 0;
+            while (amount == 0) {
+                System.out.print("\tEnter amount: $");
+                amount = promptAmount() * -1;
+            }
+
+            LocalDateTime now = LocalDateTime.now();
+
+            Transaction newTrans = new Transaction(now, description, vendor, amount);
+            recordTransaction(newTrans, receipt);
+            System.out.print("\n");
+            saveTransaction(receipt);
+        }
+    }
+
+    public static void saveTransaction(ArrayList<Transaction> receipt) {
+        try {
+            BufferedWriter bufWriter = new BufferedWriter(new FileWriter(TEST, true));
+            for (Transaction t : receipt) {
+                String date = (t.getDateTime()).format(dateOnly);
+                String time = (t.getDateTime()).format(timeOnly);
+                String record = String.format("%n%s|%s|%s|%s|%.2f",
+                        date,
+                        time,
+                        t.getDescription(),
+                        t.getVendor(),
+                        t.getAmount());
+
+                bufWriter.write(record);
+            }
+            bufWriter.close();
+        } catch (IOException e) {
+            System.out.println("ERROR: Cannot write to file " + e.getMessage());
+        }
+    }
+
+    public static void recordTransaction(Transaction t, ArrayList<Transaction> receipt) {
+        ledger.add(t);
+        receipt.add(t);
+        System.out.println("\nsuccess!");
+        displayReceipt(receipt);
+    }
+    //endregion
+}

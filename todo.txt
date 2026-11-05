@@ -1,3 +1,21 @@
+## SPEC FIXES
+-[] MTD: match year AND month (not just month)
+-[] Prev Month: use LocalDate.now().minusMonths(1), match year AND month (breaks in Jan)
+-[] Make Payment: replace debit card prompt with vendor + description (stop saving card # to CSV)
+-[] Sort ledger after adding a transaction (newest first)
+-[] Switch file from TEST back to transactions.csv
+
+## SMALLER FIXES
+-[] Reject amounts <= 0 for deposits and payments
+-[] Make Payment: don't lowercase description/vendor
+-[] Don't allow blank description/vendor; remove dead NPE catch + amount==0 check
+-[] saveTransaction: stop writing blank lines (%n before record)
+-[] Custom search: re-prompt or warn on invalid date instead of silently skipping filter
+-[] "Add another? (y/n)": only accept y or n
+
+## LANTERNA UI
+-[] Research
+
 BONUS
 -[x] Add custom search in reports (6)Custom Search
 -[x] Prompt the user for:
@@ -7,7 +25,7 @@ BONUS
     -[x] Vendor
     -[x] Amount
 ##If the user enters a value for a field you should filter on that field
--[]
+-[x]
 ##If the user does not enter a value, you should not filter on that field
 -----
 ###OPTIMIZATIONS
