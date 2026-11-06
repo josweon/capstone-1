@@ -15,10 +15,11 @@ A `custom search` lets you filter by any combination of `date` range, `descripti
 
 ## Features
 
-![Welcome Screen](/assets/demo_welcome_screen.png)
-![All Menus](/assets/demo_full_menu.png)
-![Search](/assets/demo_search.png)
-
+<p align="center">
+    <img src= "assets/demo_welcome_screen.png" alt="Welcome Screen">
+    <img src="assets/demo_full_menu.png" alt="Full Menu">
+    <img src="assets/demo_search.png" alt="Search">
+</p>
 
 -[]How to run
 
