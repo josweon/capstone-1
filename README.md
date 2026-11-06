@@ -47,7 +47,7 @@ capstone-1/
         └── test-transactions.csv      # sample data for TESTING
 ```
 
-### Interesting Code
+## Interesting Code
 ```java
     //From loadTransaction() in the Main Class
     //Lines 430-436
@@ -61,4 +61,13 @@ capstone-1/
     
 ```
 
--[]future Improvements
+## Future Improvements
+1. **Lanterna TUI:** Add an interactive full-screen terminal interface.
+<p align="center">
+   <img src="assets/demo_tui.png" alt="TUI">
+</p>
+
+2. **Show running balance and totals:** Show the current balance plus total deposits and payments under each report.
+3. **Display DateTime in a more user-friendly manner:** Currently displays as `2026-11-06` and changing to `Friday, Nov 6th` would be digested faster.
+4. **Export reports:** Have the option to export reports to *.json* or *.csv* formats.
+
