@@ -16,8 +16,10 @@ A `custom search` lets you filter by any combination of `date` range, `descripti
 ## Features
 
 ![Welcome Screen](/assets/demo_welcome_screen.png)
+![All Menus](/assets/demo_full_menu.png)
+![Search](/assets/demo_search.png)
 
--[]Features
+
 -[]How to run
 
 ## Project Structure
