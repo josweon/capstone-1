@@ -50,7 +50,7 @@ capstone-1/
 ## Interesting Code
 ```java
     //From loadTransaction() in the Main Class
-    //Lines 430-436
+    //Lines 443-449
     String formatDateTime = String.format("%sT%s", tokens[0], tokens[1]); //<- Combines date/time to form a DateTime object
     LocalDateTime dateTime = LocalDateTime.parse(formatDateTime); //<- ISO 8601 format (yyyy-MM-dd'T'HH:mm:ss)
     String description = tokens[2];

@@ -209,7 +209,8 @@ public class AccountingLedgerApp {
         boolean exit = false;
         do {
             System.out.print(menu);
-            String option = promptText();
+            String option = promptText().toLowerCase()
+                    ;
 
             switch (option) {
                 case "1" -> displayTransactions(monthToDate(), "mtd");
@@ -306,7 +307,7 @@ public class AccountingLedgerApp {
     //region BONUS: Custom Search (6)
     public static void customSearch() {
         System.out.println("\t\t\t==* C U S T O M * S E A R C H *==");
-        System.out.println("\t\t\tpress enter to skip field.\n");
+        System.out.println("\t\t\t   <press ENTER to skip field>\n");
 
         LocalDateTime startDate = null;
         LocalDateTime endDate = null;
@@ -352,6 +353,17 @@ public class AccountingLedgerApp {
         filterSearch(startDate, endDate, description, vendor, amount);
     }
 
+    /**
+     * Filters the ledger using only the criteria the user provided. Note that
+     * a null or empty argument means "don't filter on this field". Description
+     * and vendor matches are case independent.
+     *
+     * @param startDate earliest date/time to include
+     * @param endDate latest date/time to include
+     * @param description text the description must contain
+     * @param vendor text the vendor must contain
+     * @param amount exact amount to match
+     */
     public static void filterSearch(LocalDateTime startDate,
                                     LocalDateTime endDate,
                                     String description,
@@ -400,6 +412,7 @@ public class AccountingLedgerApp {
             }
         }
         if (filterTrans.isEmpty()) {
+
             System.out.println("\n\t\t\tno matches.");
         } else {
             displayTransactions(filterTrans, "cs");
@@ -422,7 +435,7 @@ public class AccountingLedgerApp {
             while ((input = bufReader.readLine()) != null) {
                 String[] tokens = input.split("\\|");
                 if (tokens.length < 5) {
-                    System.out.println("Skipping malformed lines: " + input);
+                    System.out.println("Invalid input (malformed), skipping line " + input);
                     continue;
                 }
                 try {

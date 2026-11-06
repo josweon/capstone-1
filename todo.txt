@@ -2,8 +2,8 @@
 -[x] Get Screenshot with lanterna tui for future improvements
 -[x] Organize codebase for grading
 -[x] Start README.md (https://github.com/id3283/capstone-advice)
--[] add docstring
--[] Update interesting code line numbers
+-[x] add docstring
+-[x] Update interesting code line numbers
 
 ## POSSIBLE IMPROVEMENTS
 -[x] Change the date format to (Thursday, May 10th)
