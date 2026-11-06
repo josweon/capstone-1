@@ -70,4 +70,3 @@ capstone-1/
 2. **Show running balance and totals:** Show the current balance plus total deposits and payments under each report.
 3. **Display DateTime in a more user-friendly manner:** Currently displays as `2026-11-06` and changing to `Friday, Nov 6th` would be digested faster.
 4. **Export reports:** Have the option to export reports to *.json* or *.csv* formats.
-
