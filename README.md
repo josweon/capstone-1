@@ -13,6 +13,28 @@ You can also run `reports` according to:
 
 A `custom search` lets you filter by any combination of `date` range, `description`, `vendor` and `amount`.  
 
+## Features
+
+![Welcome Screen](/assets/demo_welcome_screen.png)
+
+-[]Features
+-[]How to run
+
+## Project Structure
+
+```
+capstone-1/
+├── pom.xml
+├── README.md
+└── src/main/
+    ├── java/com/pluralsight/
+    │   ├── AccountingLedgerApp.java   # menus, reports, file I/O
+    │   └── Transaction.java           # transaction model
+    └── resources/
+        ├── transactions.csv           # ledger data
+        └── test-transactions.csv      # sample data for TESTING
+```
+
 ### Interesting Code
 ```java
     
@@ -25,3 +47,5 @@ A `custom search` lets you filter by any combination of `date` range, `descripti
     ledger.add(new Transaction(dateTime, description, vendor, amount));
     
 ```
+
+-[]future Improvements
