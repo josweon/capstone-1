@@ -62,7 +62,7 @@ capstone-1/
 ```
 
 ## Future Improvements
-1. **Lanterna TUI:** Add an interactive full-screen terminal interface.
+1. **Lanterna TUI:** Add an interactive full-screen terminal interface. See a working prototype here: https://github.com/josweon/jdl-accounting-services
 <p align="center">
    <img src="assets/demo_tui.png" alt="TUI">
 </p>
