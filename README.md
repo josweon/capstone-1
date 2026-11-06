@@ -21,7 +21,16 @@ A `custom search` lets you filter by any combination of `date` range, `descripti
     <img src="assets/demo_search.png" alt="Search">
 </p>
 
--[]How to run
+## How to Run
+
+**Requires:** Java 17+ and IntelliJ
+
+1. Clone the repo:
+    ```bash
+    git clone https://github.com/josweon/capstone-1.git
+    ```
+2. Open the folder in IntelliJ.
+3. Run `AccountingLedgerApp.java`.
 
 ## Project Structure
 
